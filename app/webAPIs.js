@@ -8,6 +8,7 @@ import safeApis from 'extensions/safe/api';
 // globals
 const WITH_CALLBACK_TYPE_PREFIX = '_with_cb_';
 const WITH_ASYNC_CALLBACK_TYPE_PREFIX = '_with_async_cb_';
+const RETURN_OBJECT_TYPE_PREFIX = '_return_object_';
 
 const allAPIs = [safeAuthApi, safeApis];
 
@@ -78,7 +79,6 @@ const setupIpcListener = () =>
     } );
 };
 
-
 // setup all web APIs
 export function setupWebAPIs()
 {
@@ -93,6 +93,7 @@ export function setupWebAPIs()
         const fnsToExport = [];
         const fnsWithCallbacks = [];
         const fnsWithAsyncCallbacks = [];
+        const fnsWithObject = [];
 
         //here we have array instead of obj as auth
         // for ( const fn in api.manifest )
@@ -106,6 +107,10 @@ export function setupWebAPIs()
             {
                 fnsWithAsyncCallbacks[fn] = api.manifest[fn];
             }
+            else if (fn.startsWith(RETURN_OBJECT_TYPE_PREFIX))
+            {
+                fnsWithObject[fn] = api.manifest[fn];
+            }
             else
             {
                 fnsToExport[fn] = api.manifest[fn];
@@ -115,6 +120,7 @@ export function setupWebAPIs()
         rpc.exportAPI( api.name, fnsToExport, api.methods );
         rpc.exportAPI( WITH_CALLBACK_TYPE_PREFIX + api.name, fnsWithCallbacks, api.methods ); // FIXME: api.methods shall be probably chopped too
         rpc.exportAPI( WITH_ASYNC_CALLBACK_TYPE_PREFIX + api.name, fnsWithAsyncCallbacks, api.methods ); // FIXME: api.methods shall be probably chopped too
+        rpc.exportAPI( RETURN_OBJECT_TYPE_PREFIX + api.name, fnsWithObject, api.methods ); // FIXME: api.methods shall be probably chopped too
     } );
 }
 
