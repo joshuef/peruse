@@ -1,4 +1,5 @@
 const app = require( './app' );
+const appv2 = require( './v2/app_v2' );
 const cipherOpt = require( './cipher_opt' );
 const imdata = require( './immutable_data' );
 const crypto = require( './crypto' );
@@ -9,6 +10,7 @@ const cryptoSignKeyPair = require( './crypto_sign_key_pair' );
 const cryptoPubSignKey = require( './crypto_public_sign_key' );
 const cryptoSecSignKey = require( './crypto_secret_sign_key' );
 const mdata = require( './mutable_data' );
+const mdatav2 = require( './v2/mutable_data_v2' );
 const mdataEntries = require( './mutable_data_entries' );
 const mdataMutation = require( './mutable_data_mutation' );
 const mdataPermissions = require( './mutable_data_permissions' );
@@ -23,6 +25,14 @@ module.exports = [
         manifest   : app.manifest,
         methods    : app,
         protocols  : ['safe', 'http', 'https']
+
+    },
+    {
+        name       : 'safeApp_v2',
+        isInternal : true,
+        manifest   : appv2.manifest,
+        methods    : appv2,
+        protocols  : ['safe', 'http']
 
     },
     {
@@ -103,6 +113,14 @@ module.exports = [
         manifest   : mdata.manifest,
         methods    : mdata,
         protocols  : ['safe', 'http', 'https']
+
+    },
+    {
+        name       : 'safeMutableData_v2',
+        isInternal : true,
+        manifest   : mdatav2.manifest,
+        methods    : mdatav2,
+        protocols  : ['safe', 'http']
 
     },
     {

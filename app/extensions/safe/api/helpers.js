@@ -107,6 +107,15 @@ export const freePageObjs = (groupId) => {
   }
 };
 
+export const marshallObj = (obj) => {
+  let obj2 = JSON.parse(JSON.stringify(obj));
+  Object.getOwnPropertyNames(Object.getPrototypeOf(obj)).map((p) => {
+    //console.log("Marshalling attr:", obj[p].toString())
+    obj2[p] = obj[p].toString();
+  })
+  return JSON.stringify(obj2);
+}
+
 export const forEachHelper = (containerHandle, sendHandles) => {
   const readable = new Readable({ objectMode: true, read() {} });
   getObj(containerHandle)

@@ -7,6 +7,7 @@ import pkg from 'appPackage';
 const VERSION = pkg.version;
 const WITH_CALLBACK_TYPE_PREFIX = '_with_cb_';
 const WITH_ASYNC_CALLBACK_TYPE_PREFIX = '_with_async_cb_';
+const RETURN_OBJECT_TYPE_PREFIX = '_return_object_';
 
 // Use a readable RPC stream to invoke a provided callback function,
 // resolving the promise upon the closure of the stream the sender.
@@ -44,6 +45,25 @@ const readableToAsyncCallback = ( rpcAPI, safeAppGroupId ) =>
         } );
 
 
+const readableToObject = (rpcAPI) => {
+  return (...args) => {
+    return new Promise((resolve, reject) => {
+      return rpcAPI(...args).then(
+        (objSerialised) => {
+          console.log("SERIAL OBJ received: ", objSerialised)
+          const obj = JSON.parse(objSerialised);
+          console.log("PARSED OBJ received: ", obj);
+          delete obj.constructor;
+          const methods = Object.keys( obj ).filter( name => !~name.indexOf( "__" ) );
+          methods.forEach( fn => obj[fn] = new Function('return ' + obj[fn])() );
+          return resolve(obj);
+        },
+        reject
+      )
+    });
+  }
+}
+
 // method which will populate window.beaker with the APIs deemed appropriate for the protocol
 const setupPreload = () =>
 {
@@ -60,6 +80,7 @@ const setupPreload = () =>
         const fnsToImport = [];
         const fnsWithCallback = [];
         const fnsWithAsyncCallback = [];
+        const fnsWithObject = [];
 
         Object.keys( webAPIs[k] ).forEach( fn =>
         {
@@ -84,13 +105,19 @@ const setupPreload = () =>
                 // so they can be automatically freed when the page is closed or refreshed
                 fnsWithAsyncCallback[newFnName] = readableToAsyncCallback( rpcAPI[fn], safeAppGroupId );
             }
+            else if ( fn.startsWith( RETURN_OBJECT_TYPE_PREFIX ) )
+            {
+                let manifest = {[fn]: 'promise'};
+                let rpcAPI = rpc.importAPI(RETURN_OBJECT_TYPE_PREFIX + k, manifest, { timeout: false })
+                let newFnName = fn.replace(RETURN_OBJECT_TYPE_PREFIX, '');
+                fnsWithObject[newFnName] = readableToObject(rpcAPI[fn]);
+            }
             else
             {
                 fnsToImport[fn] = webAPIs[k][fn];
             }
         });
-
-        window[k] = Object.assign( rpc.importAPI( k, fnsToImport, { timeout: false } ), fnsWithCallback, fnsWithAsyncCallback );
+        window[k] = Object.assign( rpc.importAPI( k, fnsToImport, { timeout: false } ), fnsWithCallback, fnsWithAsyncCallback, fnsWithObject );
     } );
 }
 
