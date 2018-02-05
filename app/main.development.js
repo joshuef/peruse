@@ -10,16 +10,21 @@
  *
  * @flow
  */
-import { app, BrowserWindow, protocol, ipcMain } from 'electron';
+import { app, BrowserWindow, protocol, ipcMain, Menu, Tray } from 'electron';
 import logger from 'logger';
 import { isRunningUnpacked, isRunningPackaged, PROTOCOLS } from 'appConstants';
 import { parse as parseURL } from 'url';
 import pkg from 'appPackage';
 
+import setupBackground from './setupBackground';
+
 import openWindow from './openWindow';
 import loadExtensions from './extensions';
-import {configureStore} from './store/configureStore';
+import { configureStore } from './store/configureStore';
+
+// TODO: Deprecate this in favour of redux actions
 import handleCommands from './commandHandling';
+
 import { setupWebAPIs } from './webAPIs';
 
 // TODO: This should be handled in an extensible fashion
@@ -27,19 +32,24 @@ import { handleOpenUrl } from './extensions/safe/network';
 import { addTab, closeActiveTab } from 'actions/tabs_actions';
 import { setupServerVars, startServer } from './server';
 
+import { createTrayWindow, createTray } from './setupTray';
 
 const initialState = {};
+let bgProcessWindow = null;
 
 // Add middleware from extensions here.
 const loadMiddlewarePackages = [];
 
 const store = configureStore( initialState, loadMiddlewarePackages );
 
+
+
 global.mainProcessStore = store;
 // renderer error notifications
-ipcMain.on('errorInWindow', function(event, data){
-    logger.error(data)
-});
+ipcMain.on( 'errorInWindow', ( event, data ) =>
+{
+    logger.error( data );
+} );
 
 const mainWindow = null;
 
@@ -141,9 +151,15 @@ app.on( 'ready', async () =>
     loadExtensions( server, store );
     startServer( server );
 
+
     setupWebAPIs();
 
     handleCommands( store );
+
+    createTray()
+    createTrayWindow();
+
+    // bgProcessWindow = setupBackground();
 } );
 
 app.on( 'open-url', ( e, url ) =>
@@ -166,6 +182,13 @@ app.on( 'open-url', ( e, url ) =>
 
 app.on( 'window-all-closed', () =>
 {
+
+    logger.verbose( 'All Windows Closed!')
+
+
+    // Don't show the app in the doc
+    // app.dock.hide() //hide the icon
+
     global.macAllWindowsClosed = true;
 
     // HACK: Fix this so we can have OSX convention for closing windows.

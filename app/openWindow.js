@@ -84,8 +84,8 @@ const openWindow = ( store ) =>
 
         const webContentsId = mainWindow.webContents.id;
 
-        // TODO: This assumes no BG windows!
-        if( BrowserWindow.getAllWindows().length === 1 )
+        // TODO: This assumes one BG windows!
+        if( BrowserWindow.getAllWindows().length === 2 )
         {
             //first tab needs this webContentsId.
             store.dispatch( updateTab({ index: 0, windowId: webContentsId }))

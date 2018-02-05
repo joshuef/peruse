@@ -8,24 +8,24 @@ import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 
-var log = require( 'electron-log' );
+const log = require( 'electron-log' );
 
 
-log.info('Starting render process');
-window.onerror = function(error, url, line) {
-    log.error(error);
-    log.error(url);
-    log.error(line);
-
+log.info( 'Starting render process' );
+window.onerror = function ( error, url, line )
+{
+    log.error( error );
+    log.error( url );
+    log.error( line );
 };
 
 const store = configureStore();
 // const history = syncHistoryWithStore( hashHistory, store );
-
+window.peruseStore = store;
 
 render(
     <AppContainer>
-        <Root store={ store } history={history} />
+        <Root store={ store } history={ history } />
     </AppContainer>,
     document.getElementById( 'root' )
 );

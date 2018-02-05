@@ -166,7 +166,7 @@ export default class Browser extends Component
         // TODO: if not, lets trigger close?
         if ( !activeTab )
         {
-            return <div />;
+            return <div className="noTabsToShow" />;
         }
 
         const activeTabAddress = activeTab.url;
