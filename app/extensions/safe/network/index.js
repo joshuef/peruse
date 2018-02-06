@@ -85,7 +85,7 @@ export const initAnon = async ( passedStore ) =>
     {
         // does it matter if we override?
         appObj = await initializeApp( APP_INFO.info, null, {
-            libPath        : CONFIG.LIB_PATH,
+            libPath        : CONFIG.SAFE_NODE_LIB_PATH,
             registerScheme : false,
             joinSchemes    : [PROTOCOLS.SAFE],
             configPath     : CONFIG.CONFIG_PATH

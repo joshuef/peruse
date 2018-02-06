@@ -11,9 +11,7 @@ export const isHot = process.env.HOT || 0;
 // TODO: For live-prod we need to setup menu/devtools etc, while ensuring it doesnt affect e2e tests
 export const isRunningProduction = /^prod/.test( env );
 export const isRunningDevelopment = /^dev/.test( env );
-
 export const isRunningSpectronTest = !!process.env.IS_SPECTRON;
-
 export const inRendererProcess = typeof window !== 'undefined';
 
 // Set global for tab preload.
@@ -43,26 +41,13 @@ export const INTERNAL_PAGES = {
 export const CONFIG = {
     PORT                 : 3984,
     SAFE_PARTITION       : 'persist:safe-tab',
-    LIB_PATH             : path.resolve( __dirname, safeNodeAppPathModifier, 'node_modules/@maidsafe/safe-node-app/src/native' ),
+    SAFE_NODE_LIB_PATH   : path.resolve( __dirname, safeNodeAppPathModifier, 'node_modules/@maidsafe/safe-node-app/src/native' ),
     CONFIG_PATH          : path.resolve( __dirname, '../resources' ),
     APP_HTML_PATH        : path.resolve( __dirname, './app.html' ),
     DATE_FORMAT          : 'h:MM-mmm dd',
     NET_STATUS_CONNECTED : 'Connected',
     STATE_KEY            : 'peruseState',
     BROWSER_TYPE_TAG     : 8467
-};
-
-export const LIB_PATH = {
-    SAFE_AUTH : {
-        win32  : './safe_authenticator.dll',
-        darwin : './libsafe_authenticator.dylib',
-        linux  : './libsafe_authenticator.so'
-    },
-    SYSTEM_URI : {
-        win32  : './system_uri.dll',
-        darwin : './libsystem_uri.dylib',
-        linux  : './libsystem_uri.so'
-    }
 };
 
 // HACK: Prevent jest dying due to no electron globals
@@ -136,7 +121,7 @@ export const SAFE = {
         CONNECTED    : 'Connected',
         UNKNOWN      : 'Unknown',
         DISCONNECTED : 'Disconnected',
-        LOGGED_IN  : 'LOGGED_IN',
+        LOGGED_IN    : 'LOGGED_IN',
     },
     READ_STATUS :
     {
