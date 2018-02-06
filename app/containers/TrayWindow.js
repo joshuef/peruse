@@ -8,7 +8,7 @@ import * as UiActions from 'actions/ui_actions';
 import * as AuthenticatorActions from 'actions/authenticator_actions';
 // import * as BookmarksActions from 'actions/bookmarks_actions';
 // import * as SafeActions from 'actions/safe_actions';
-
+import { SAFE } from 'appConstants';
 import { TextInput } from 'nessie-ui';
 
 
@@ -35,24 +35,37 @@ class BrowserWindow extends Component
 
     render()
     {
+        const { safeNetwork } = this.props;
+
+        const loggedIn = safeNetwork.appStatus === SAFE.NETWORK_STATE.LOGGED_IN;
+
         return (
             <div>
-                <TextInput
-                    onKeyPress={ this.handleKeyPress }
-                    label="secret"
-                    inputRef={ ( input ) =>
-                    {
-                        this.secret = input;
-                    } }
-                />
-                <TextInput
-                    onKeyPress={ this.handleKeyPress }
-                    label="secret"
-                    inputRef={ ( input ) =>
-                    {
-                        this.password = input;
-                    } }
-                />
+                {
+                    loggedIn &&
+                        <h2> Logged in. Refresh your auth page. </h2>
+                }
+                {
+                    !loggedIn &&
+                        <div>
+                            <TextInput
+                                onKeyPress={ this.handleKeyPress }
+                                label="secret"
+                                inputRef={ ( input ) =>
+                                    {
+                                        this.secret = input;
+                                    } }
+                            />
+                            <TextInput
+                                onKeyPress={ this.handleKeyPress }
+                                label="secret"
+                                inputRef={ ( input ) =>
+                                    {
+                                        this.password = input;
+                                    } }
+                            />
+                        </div>
+                }
             </div>
         );
     }
@@ -64,7 +77,8 @@ function mapStateToProps( state )
         // bookmarks : state.bookmarks,
         notifications : state.notifications,
         // tabs          : state.tabs,
-        ui            : state.ui
+        ui            : state.ui,
+        safeNetwork            : state.safeNetwork,
     };
 }
 
