@@ -10,7 +10,7 @@ const initialState = {
         readStatus      : '',
         savedBeforeQuit : false,
         saveStatus      : '',
-        networkType     : ''
+        isMock          : false
     },
     tabs : [{
         url          : 'safe-auth://home/',

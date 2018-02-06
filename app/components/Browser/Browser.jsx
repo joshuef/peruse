@@ -165,7 +165,7 @@ export default class Browser extends Component
         const windowTabs = tabs.filter( tab => tab.windowId === this.state.windowId );
         const openTabs = windowTabs.filter( tab => !tab.isClosed );
         const activeTab = openTabs.find( tab => tab.isActiveTab );
-        const isMock = safeNetwork.isMock;
+        const isMock = safeNetwork ? safeNetwork.isMock : false;
 
         // TODO: if not, lets trigger close?
         if ( !activeTab )

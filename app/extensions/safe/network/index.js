@@ -221,6 +221,8 @@ export const initMock = async ( passedStore ) =>
     {
         appObj = await initializeApp( APP_INFO.info, null, { libPath: CONFIG.LIB_PATH } );
         appObj = await appObj.auth.loginForTest( APP_INFO.permissions );
+
+        passedStore.dispatch( safeActions.setIsMock( true ) );
         return appObj;
     }
     catch ( err )
