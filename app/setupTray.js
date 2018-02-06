@@ -54,7 +54,7 @@ export const createTrayWindow = () =>
     trayWindow = new BrowserWindow( {
         width          : 300,
         height         : 450,
-        show           : true, //set to false for release
+        show           : false,
         frame          : false,
         fullscreenable : false,
         resizable      : false,
