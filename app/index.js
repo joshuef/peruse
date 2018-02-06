@@ -4,6 +4,7 @@ import { render } from 'react-dom';
 // import { ipcRenderer } from 'electron';
 import { AppContainer } from 'react-hot-loader';
 // import { syncHistoryWithStore } from 'react-router-redux';
+import { push } from 'react-router-redux';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
@@ -22,6 +23,11 @@ window.onerror = function ( error, url, line )
 const store = configureStore();
 // const history = syncHistoryWithStore( hashHistory, store );
 window.peruseStore = store;
+
+if( window.perusePendingNavigation && window.perusePendingNavigation.length )
+{
+    store.dispatch( push( window.perusePendingNavigation ) );
+}
 
 render(
     <AppContainer>

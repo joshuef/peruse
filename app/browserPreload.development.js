@@ -5,5 +5,12 @@ logger.verbose( 'Peruse Browser window preloaded.' );
 
 window.peruseNav = ( location ) =>
 {
-    peruseStore.dispatch( push( location ) );
+    if( peruseStore )
+    {
+        peruseStore.dispatch( push( location ) );
+    }
+    else
+    {
+        window.perusePendingNavigation = location;
+    }
 };
