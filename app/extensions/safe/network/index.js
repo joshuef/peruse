@@ -91,6 +91,9 @@ export const initAnon = async ( passedStore ) =>
             configPath     : CONFIG.CONFIG_PATH
         } );
 
+
+        logger.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>configpath',CONFIG.CONFIG_PATH )
+
         // TODO, do we even need to generate this?
         const authReq = await appObj.auth.genConnUri( {} );
 
