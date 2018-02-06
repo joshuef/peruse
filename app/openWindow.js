@@ -1,5 +1,6 @@
 /* eslint global-require: 1, flowtype-errors/show-errors: 0 */
 import { BrowserWindow, ipcMain } from 'electron';
+import path from 'path';
 import windowStateKeeper from 'electron-window-state';
 import MenuBuilder from './menu';
 import logger from 'logger';
@@ -12,10 +13,10 @@ import {
 } from './actions/tabs_actions';
 import { selectAddressBar } from './actions/ui_actions';
 
-//TODO: Move this // abstract
-import {authFromQueue} from './extensions/safe/network';
+// TODO: Move this // abstract
+import { authFromQueue } from './extensions/safe/network';
 
-let windowArray = [];
+const windowArray = [];
 
 function getNewWindowPosition( mainWindowState )
 {
@@ -59,6 +60,10 @@ const openWindow = ( store ) =>
         height            : mainWindowState.height,
         titleBarStyle     : 'hidden-inset',
         'standard-window' : false,
+        webPreferences    :
+        {
+            preload : path.join( __dirname, 'browserPreload.js' )
+        }
 
     } );
 
@@ -85,17 +90,16 @@ const openWindow = ( store ) =>
         const webContentsId = mainWindow.webContents.id;
 
         // TODO: This assumes one BG windows!
-        if( BrowserWindow.getAllWindows().length === 2 )
+        if ( BrowserWindow.getAllWindows().length === 2 )
         {
-            //first tab needs this webContentsId.
-            store.dispatch( updateTab({ index: 0, windowId: webContentsId }))
+            // first tab needs this webContentsId.
+            store.dispatch( updateTab( { index: 0, windowId: webContentsId } ) );
         }
         else
         {
-            store.dispatch( addTab({ url: 'about:blank', windowId: webContentsId, isActiveTab : true }) );
-            store.dispatch( selectAddressBar() )
+            store.dispatch( addTab( { url: 'about:blank', windowId: webContentsId, isActiveTab: true } ) );
+            store.dispatch( selectAddressBar() );
         }
-
     } );
 
     mainWindow.on( 'closed', () =>
@@ -104,7 +108,7 @@ const openWindow = ( store ) =>
         mainWindow = null;
         if ( index > -1 )
         {
-            windowArray.splice( index, 1 )
+            windowArray.splice( index, 1 );
         }
     } );
 
@@ -112,7 +116,7 @@ const openWindow = ( store ) =>
 
     const menuBuilder = new MenuBuilder( mainWindow, openWindow, store );
     menuBuilder.buildMenu();
-}
+};
 
 
 export default openWindow;
@@ -120,10 +124,10 @@ export default openWindow;
 
 ipcMain.on( 'command:close-window', ( ) =>
 {
-    let win = BrowserWindow.getFocusedWindow();
+    const win = BrowserWindow.getFocusedWindow();
 
-    if( win )
+    if ( win )
     {
         win.close();
     }
-})
+} );
