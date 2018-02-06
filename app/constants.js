@@ -3,20 +3,18 @@ import path from 'path';
 import { app } from 'electron';
 import pkg from 'appPackage';
 
-console.log( 'Setting constants Ready', process.argv );
 const allPassedArgs = process.argv;
 
 let hasMockFlag = false;
 
 if( allPassedArgs.includes('--mock') )
 {
-    console.log('MOCK FLAG FOUND')
     hasMockFlag = true;
 }
 
 export const isRunningUnpacked = !!process.execPath.match( /[\\/]electron/ );
 export const isRunningPackaged = !isRunningUnpacked;
-export const env = hasMockFlag ? 'dev' : process.env.NODE_ENV || 'production';
+export const env = hasMockFlag ? 'development' : process.env.NODE_ENV || 'production';
 export const isHot = process.env.HOT || 0;
 
 // TODO: For live-prod we need to setup menu/devtools etc, while ensuring it doesnt affect e2e tests

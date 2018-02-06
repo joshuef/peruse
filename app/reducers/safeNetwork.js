@@ -3,9 +3,11 @@ import { TYPES } from 'actions/safe_actions';
 import initialAppState from './initialAppState';
 import logger from 'logger';
 
-import { SAFE, CONFIG } from 'appConstants';
+import { SAFE, CONFIG, isRunningDevelopment } from 'appConstants';
 
-const initialState = initialAppState.safeNetwork;
+const initialSafeState = initialAppState.safeNetwork;
+
+const initialState = { ...initialSafeState, isMock: isRunningDevelopment };
 
 export default function safeNetwork( state = initialState, action )
 {
