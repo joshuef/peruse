@@ -1,13 +1,12 @@
 /* eslint-disable no-underscore-dangle */
+import should from 'should';
 import crypto from 'crypto';
 import i18n from 'i18n';
-import client, { Authenticator } from '../ffi/authenticator';
+import client from '../src/ffi/authenticator';
 import * as helper from './helper';
-import CONST from '../auth-constants';
+import CONST from '../src/constants';
 
-const to = helper.to;
-
-describe('Authenticator Client', () => {
+describe('Client', () => {
   let randomCredentials = null;
   const encodedAuthUri = 'safe-auth:AAAAAAgMpeUAAAAAHgAAAAAAAABuZXQubWFpZHNhZmUuZXhh' +
   'bXBsZXMudGVzdC1hcHAAEAAAAAAAAABTQUZFIGV4YW1wbGUgQXBwEQAAAAAAAABNYWlkU2FmZS5uZXQgTHR' +
