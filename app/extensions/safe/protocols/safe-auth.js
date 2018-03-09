@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import url from 'url';
 import logger from 'logger';
-import { CONFIG, PROTOCOLS, isRunningUnpacked } from 'appConstants';
+import { CONFIG, APP_INFO, PROTOCOLS, isRunningUnpacked } from 'appConstants';
 
 import { session, app } from 'electron';
 /* eslint-enable import/extensions */
@@ -15,7 +15,7 @@ import sysUri from '../ffi/sys_uri';
 
 const appInfo = {
     id     : 'net.maidsafe.app.browser.authenticator',
-    exec   : isRunningUnpacked ? [ process.execPath, app.getAppPath() ] : [ app.getPath( 'exe' ) ],
+    exec   : APP_INFO.info.customExecPath,
     vendor : 'MaidSafe.net Ltd',
     name   : 'SAFE Browser Authenticator plugin',
     icon   : 'iconPath'
@@ -42,7 +42,7 @@ export const registerSafeAuthProtocol = () =>
 
     ses.protocol.registerHttpProtocol( PROTOCOLS.SAFE_AUTH, ( req, cb ) =>
     {
-        logger.verbose( `safe-auth:// url being parsed: ${req.url}` );
+        logger.verbose( `Procotol:: safe-auth:// url being parsed: ${req.url}` );
 
         // TODO. Sort out when/where with slash
         const newUrl = `http://localhost:${CONFIG.PORT}/auth/${req.url}`;

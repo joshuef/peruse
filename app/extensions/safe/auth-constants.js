@@ -1,5 +1,6 @@
 import Enum from 'enum';
 import path from 'path';
+import logger from 'logger';
 import { isHot,
     isRunningPackaged,
     isRunningProduction,
@@ -28,7 +29,7 @@ if ( isHot )
     // libLocaleModifier = 'extensions/safe/';
     // TODO. Questions about mock. Hmm
 }
-else if ( isRunningSpectronTest )
+else if ( isRunningSpectronTest || inRendererProcess )
 {
     libLocaleModifier = `extensions/safe`;
 }
