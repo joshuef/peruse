@@ -8,27 +8,23 @@ const allPackages = [ safeBrowsing ];
 
 export const loadExtensions = ( server, store ) =>
 {
-    logger.info( 'Loading extensions' );
-
-    allPackages.forEach( loadPackage => {
-
-        if( loadPackage.setupRoutes )
+    allPackages.forEach( loadPackage =>
+    {
+        if ( loadPackage.setupRoutes )
         {
-            loadPackage.setupRoutes( server );
+            loadPackage.setupRoutes( server, store );
         }
-
-        loadPackage.init( store )
+        loadPackage.init( store );
     } );
 };
 
 export const onOpenLoadExtensions = ( store ) =>
 {
-    allPackages.forEach( loadPackage => {
-
-        if( loadPackage.onOpen )
+    allPackages.forEach( loadPackage =>
+    {
+        if ( loadPackage.onOpen )
         {
-            loadPackage.onOpen( store )
+            loadPackage.onOpen( store );
         }
-
     } );
-}
+};

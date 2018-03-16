@@ -14,6 +14,11 @@ let peruseAppObj;
 let store;
 let browserAuthReqUri;
 
+//////////////////////////
+//
+// QUESTION: Many of these functions are duplicated in the\
+// index of this directory. What is the purpose of these?
+/////////////////////////
 
 export const authFromQueue = async () =>
 {

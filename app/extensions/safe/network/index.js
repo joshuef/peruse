@@ -3,6 +3,7 @@ import { APP_INFO, CONFIG, SAFE, PROTOCOLS } from 'appConstants';
 import logger from 'logger';
 import { parse as parseURL } from 'url';
 import { addNotification, clearNotification } from 'actions/notification_actions';
+import { handleAuthUrl } from 'actions/authenticator_actions';
 import { callIPC } from '../ffi/ipc';
 // import ipc from '../ffi/ipc';
 import AUTH_CONSTANTS from '../auth-constants';
@@ -28,14 +29,36 @@ export const handleSafeAuthAuthentication = ( uri, type ) =>
         throw new Error( 'Auth URI should be a string' );
     }
 
-    // TODO: This. we needstore...
-    store.dispatch( authenticatorActions.handleAuthUrl( uri ) );
-
-    // callIPC.decryptRequest( null, uri, type || AUTH_CONSTANTS.CLIENT_TYPES.DESKTOP );
-
+    store.dispatch( handleAuthUrl( uri ) );
 };
 
 export const getPeruseAuthReqUri = () => browserAuthReqUri;
+
+export const authFromInteralResponse = async ( res, isAuthenticated ) =>
+{
+    //TODO: This logic shuld be in BG process for peruse.
+    try
+    {
+        // for webFetch app only
+        peruseAppObj = await peruseAppObj.auth.loginFromURI( res );
+    }
+    catch ( err )
+    {
+        if ( store )
+        {
+            let message = err.message;
+
+            if ( err.message.startsWith( 'Unexpected (probably a logic' ) )
+            {
+                message = 'Check your current IP address matches your registered address at invite.maidsafe.net';
+            }
+            store.dispatch( addNotification( { text: message, onDismiss: clearNotification } ) );
+        }
+
+        logger.error( err.message || err );
+        logger.error( '>>>>>>>>>>>>>' );
+    }
+};
 
 export const initAnon = async ( passedStore ) =>
 {
@@ -64,7 +87,7 @@ export const initAnon = async ( passedStore ) =>
         if ( authType.action === 'auth' )
         {
             // await peruseAppObj.auth.openUri( authReq.uri );
-            handleSafeAuthAuthentication( authReq.uri );
+            handleSafeAuthAuthentication( authReq.uri, null );
         }
 
         return peruseAppObj;

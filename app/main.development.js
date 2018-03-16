@@ -21,7 +21,6 @@ import * as authenticatorActions from 'actions/authenticator_actions';
 import setupBackground from './setupBackground';
 
 import openWindow from './openWindow';
-import { loadExtensions }  from './extensions';
 import { configureStore } from './store/configureStore';
 
 // TODO: Deprecate this in favour of redux actions
@@ -29,7 +28,6 @@ import { configureStore } from './store/configureStore';
 
 // TODO: This should be handled in an extensible fashion
 import { addTab } from 'actions/tabs_actions';
-import { setupServerVars, startServer } from './server';
 
 // import { createSafeInfoWindow, createTray } from './setupTray';
 
@@ -157,18 +155,12 @@ app.on( 'ready', async () =>
         app.exit();
     }
 
-
-    const server = await setupServerVars();
-
-    loadExtensions( server, store );
-    startServer( server );
-
     // TODO: Reenable for adding Safe Network popup
     // createTray();
     // createSafeInfoWindow();
 
     // TODO: This order is important, reversing breaks tests. Why!?
-    bgProcessWindow = setupBackground();
+    bgProcessWindow = await setupBackground( );
     openWindow( store );
 } );
 

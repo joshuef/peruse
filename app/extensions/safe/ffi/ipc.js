@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-import { ipcMain, shell } from 'electron';
-import { authFromInteralResponse, getPeruseAuthReqUri } from '../network/authenticator-comms';
+import { shell } from 'electron';
+import { getPeruseAuthReqUri, authFromInteralResponse } from '../network';
 import * as peruseAppActions from 'actions/peruse_actions';
 import * as notificationActions from 'actions/notification_actions';
 import i18n from 'i18n';
