@@ -57,6 +57,16 @@
       "**/weak/**/*",
       "**/nessie-ui/dist/styles.css"
     ],
+    "extraFiles": [
+      {
+        "from": "resources/log.toml",
+        "to": "log.toml"
+      },
+      {
+        "from": "resources/crust.config",
+        "to": "${name}.crust.config"
+      }
+    ],
     "extraResources": [
       {
         "from": "resources/log.toml",
