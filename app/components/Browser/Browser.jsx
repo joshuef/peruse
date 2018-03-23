@@ -3,34 +3,33 @@
 import { ipcRenderer, remote } from 'electron';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { SAFE, CLASSES, isRunningSpectronTest } from 'appConstants';
 import AddressBar from 'components/AddressBar';
 import TabBar from 'components/TabBar';
 import Notifier from 'components/Notifier';
 import TabContents from 'components/TabContents';
 import styles from './browser.css';
-import setupAuthHandling from 'extensions/safe/authIPCHandling';
 import logger from 'logger';
 
 export default class Browser extends Component
 {
     static propTypes =
     {
-        bookmarks            : PropTypes.array,
-        notifications        : PropTypes.array,
-        tabs                 : PropTypes.array,
-        addBookmark          : PropTypes.func.isRequired,
-        removeBookmark       : PropTypes.func.isRequired,
-        selectAddressBar     : PropTypes.func.isRequired,
-        deselectAddressBar   : PropTypes.func.isRequired,
-        blurAddressBar       : PropTypes.func.isRequired,
-        addTab               : PropTypes.func,
-        closeTab             : PropTypes.func,
-        closeActiveTab       : PropTypes.func,
-        reopenTab            : PropTypes.func,
-        // addNotification   : PropTypes.func.isRequired,
-        addLocalNotification : PropTypes.func.isRequired,
-        clearNotification    : PropTypes.func,
-        ui                   : PropTypes.object.isRequired
+        bookmarks          : PropTypes.array,
+        notifications      : PropTypes.array,
+        tabs               : PropTypes.array,
+        addBookmark        : PropTypes.func.isRequired,
+        removeBookmark     : PropTypes.func.isRequired,
+        selectAddressBar   : PropTypes.func.isRequired,
+        deselectAddressBar : PropTypes.func.isRequired,
+        blurAddressBar     : PropTypes.func.isRequired,
+        addTab             : PropTypes.func,
+        closeTab           : PropTypes.func,
+        closeActiveTab     : PropTypes.func,
+        reopenTab          : PropTypes.func,
+        updateNotification : PropTypes.func.isRequired,
+        clearNotification  : PropTypes.func,
+        ui                 : PropTypes.object.isRequired
     }
 
     static defaultProps =
@@ -54,14 +53,11 @@ export default class Browser extends Component
             closeTab,
             closeActiveTab,
             reopenTab,
-            // use local notifications, keeps auth in one relevant window
-            addLocalNotification,
             clearNotification
         } = this.props;
         const addressBar = this.address;
 
         const theBrowser = this;
-        setupAuthHandling( addLocalNotification, clearNotification );
 
         // this is mounted but its not show?
         this.setState( { windowId: remote.getCurrentWebContents().id } );
@@ -132,6 +128,20 @@ export default class Browser extends Component
         }
     }
 
+    handleSpectronTestSaveState = ( ) =>
+    {
+        const { setSaveConfigStatus } = this.props;
+
+        setSaveConfigStatus( SAFE.SAVE_STATUS.TO_SAVE );
+    }
+
+    handleSpectronTestReadState = ( ) =>
+    {
+        const { setReadConfigStatus } = this.props;
+
+        setSaveConfigStatus( SAFE.SAVE_STATUS.TO_READ );
+    }
+
     render()
     {
         const {
@@ -156,13 +166,12 @@ export default class Browser extends Component
             updateTab,
             activeTabBackwards,
             activeTabForwards,
-
-            //notifications
+            updateNotification,
             notifications,
             clearNotification,
 
             //safe network
-            safeNetwork
+            peruseApp
         } = this.props;
 
         // TODO: Set focus only for this window if current
@@ -173,12 +182,12 @@ export default class Browser extends Component
         const windowTabs = tabs.filter( tab => tab.windowId === this.state.windowId );
         const openTabs = windowTabs.filter( tab => !tab.isClosed );
         const activeTab = openTabs.find( tab => tab.isActiveTab );
-        const isMock = safeNetwork ? safeNetwork.isMock : false;
+        const isMock = peruseApp ? peruseApp.isMock : false;
 
         // TODO: if not, lets trigger close?
         if ( !activeTab )
         {
-            return <div />;
+            return <div className="noTabsToShow" />;
         }
 
         const activeTabAddress = activeTab.url;
@@ -187,6 +196,23 @@ export default class Browser extends Component
 
         return (
             <div className={ styles.container }>
+                {
+                    // TODO: Create spectron Menu spoofer component.
+                    isRunningSpectronTest &&
+                    <div
+                        className={ `${CLASSES.SPECTRON_AREA} ${styles.spectronArea}` }
+                    >
+                        <button
+                            className={ `${CLASSES.SPECTRON_AREA__SPOOF_SAVE}` }
+                            onClick={ this.handleSpectronTestSaveState }
+                        />
+                        <button
+                            className={ `${CLASSES.SPECTRON_AREA__SPOOF_READ}` }
+                            onClick={ this.handleSpectronTestReadState }
+                        />
+                    </div>
+
+                }
                 {
                     isMock &&
                     <span>Running on a mock network</span>
@@ -221,7 +247,7 @@ export default class Browser extends Component
                 />
                 <Notifier
                     key={ 3 }
-
+                    updateNotification={ updateNotification }
                     { ...notification }
                     clearNotification={ clearNotification }
                 />

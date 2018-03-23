@@ -1,32 +1,42 @@
 import path from 'path';
-
 import { app } from 'electron';
 import pkg from 'appPackage';
 
 const allPassedArgs = process.argv;
 
 let hasMockFlag = false;
+let hasDebugFlag = false;
 
 if( allPassedArgs.includes('--mock') )
 {
     hasMockFlag = true;
 }
 
+if( allPassedArgs.includes('--debug') )
+{
+    hasDebugFlag = true;
+}
+
 export const isRunningUnpacked = !!process.execPath.match( /[\\/]electron/ );
 export const isRunningPackaged = !isRunningUnpacked;
 export const env = hasMockFlag ? 'development' : process.env.NODE_ENV || 'production';
+
+//other considerations?
+export const isRunningDebug = hasDebugFlag;
 export const isHot = process.env.HOT || 0;
 
-// TODO: For live-prod we need to setup menu/devtools etc, while ensuring it doesnt affect e2e tests
+// only to be used for inital store setting in main process. Not guaranteed correct for renderers.
 export const isRunningMock = /^dev/.test( env );
 export const isRunningProduction = !isRunningMock;
+export const isRunningTest = /^test/.test( env );
 export const isRunningSpectronTest = !!process.env.IS_SPECTRON;
 export const inRendererProcess = typeof window !== 'undefined';
+export const inMainProcess = !inRendererProcess;
 
 // Set global for tab preload.
 // Adds app folder for asar packaging (space before app is important).
 const preloadLocation = isRunningUnpacked ? '' : '../';
-global.preloadFile = path.resolve( __dirname, preloadLocation, 'webPreload.js' );
+global.preloadFile = `file://${ __dirname }/webPreload.js`;
 
 let safeNodeAppPathModifier = '';
 
@@ -34,6 +44,14 @@ if ( isRunningPackaged )
 {
     safeNodeAppPathModifier = '../app.asar.unpacked/';
 }
+
+
+
+export const I18N_CONFIG = {
+    locales        : ['en'],
+    directory      : path.resolve( __dirname, 'locales' ),
+    objectNotation : true
+} ;
 
 export const PROTOCOLS = {
     SAFE           : 'safe',
@@ -102,13 +120,18 @@ else if ( process.platform === 'darwin' )
 
 export const APP_INFO = appInfo;
 
-
+// TODO. Unify with test lib/constants browser UI?
 export const CLASSES = {
-    ACTIVE_TAB  : 'js-tabBar__active-tab',
-    TAB         : 'js-tab',
-    ADD_TAB     : 'js-tabBar__add-tab',
-    CLOSE_TAB   : 'js-tabBar__close-tab',
-    PERUSE_PAGE : 'js-peruse__page'
+    ACTIVE_TAB                : 'js-tabBar__active-tab',
+    TAB                       : 'js-tab',
+    ADD_TAB                   : 'js-tabBar__add-tab',
+    CLOSE_TAB                 : 'js-tabBar__close-tab',
+    PERUSE_PAGE               : 'js-peruse__page',
+    SPECTRON_AREA             : 'js-spectron-area',
+    SPECTRON_AREA__SPOOF_SAVE : 'js-spectron-area__spoof-save',
+    SPECTRON_AREA__SPOOF_READ : 'js-spectron-area__spoof-read',
+    NOTIFIER_TEXT             : 'js-notifier__text',
+
 };
 
 
