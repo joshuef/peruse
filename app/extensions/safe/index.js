@@ -1,57 +1,30 @@
 import logger from 'logger';
-import { isRunningProduction, SAFE } from 'appConstants';
 import setupRoutes from './server-routes';
 import registerSafeProtocol from './protocols/safe';
-
 import registerSafeAuthProtocol from './protocols/safe-auth';
-import ipc from './ffi/ipc';
-
-import { initAnon, initMock } from './network';
-// import * as tabsActions from 'actions/tabs_actions';
-
-import * as authAPI from './auth-api';
-
 import blockNonSAFERequests from './blockNonSafeReqs';
-import handleStoreChanges from './handleStoreChanges';
-
+import { setIsMock } from 'actions/peruse_actions';
+import { isRunningMock } from 'appConstants';
 
 const init = async ( store ) =>
 {
     logger.info( 'Registering SAFE Network Protocols' );
-    registerSafeProtocol();
-    registerSafeAuthProtocol();
-
     try
     {
-        // setup auth
-        authAPI.ffi.ffiLoader.loadLibrary();
-
-        // dont do this inside if auth ffi as circular dep
-        ipc();
-
-        if ( isRunningProduction )
-        {
-            await initAnon( store );
-        }
-        else
-        {
-            await initMock( store );
-        }
+        registerSafeProtocol( store );
+        registerSafeAuthProtocol( store );
+        blockNonSAFERequests();
     }
     catch ( e )
     {
-        logger.info( 'Problems initing SAFE extension' );
-        logger.info( e.message );
-        logger.info( e );
+        logger.error( 'Load extensions error: ', e );
     }
-
-    blockNonSAFERequests();
-
-    store.subscribe( async () =>
-    {
-        handleStoreChanges( store );
-    } );
 };
+
+const onOpen = ( store ) =>
+{
+    store.dispatch( setIsMock( isRunningMock ) );
+}
 
 // const middleware = store => next => action =>
 // {
@@ -71,5 +44,6 @@ const init = async ( store ) =>
 export default {
     init,
     setupRoutes,
+    onOpen
     // middleware
 };

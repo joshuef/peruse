@@ -1,8 +1,8 @@
 import logger from 'logger';
+import { getPeruseAppObj } from '../network';
+import { setWebFetchStatus } from '../../../actions/web_fetch_actions';
 
-import { getAppObj } from '../network';
-
-const safeRoute = {
+const safeRoute = ( store ) => ( {
     method  : 'GET',
     path    : '/safe/{link*}',
     handler : async ( request, reply ) =>
@@ -10,7 +10,8 @@ const safeRoute = {
         try
         {
             const link = `safe://${request.params.link}`;
-            const app = getAppObj();
+
+            const app = getPeruseAppObj() || {};
             const headers = request.headers;
             let isRangeReq = false;
             const BYTES = 'bytes=';
@@ -56,8 +57,25 @@ const safeRoute = {
             {
                 options.range = { start, end };
             }
-
-            const data = await app.webFetch( link, options );
+            store.dispatch( setWebFetchStatus( {
+                fetching : true,
+                link,
+                options  : JSON.stringify( options )
+            } ) );
+            let data = null;
+            try
+            {
+	        // TODO: At this point in the code `app` has a null\
+		// connection, causing `1001` error
+                data = await app.webFetch( link, options );
+            }
+            catch ( error )
+            {
+                logger.error( error.code, error.message );
+                store.dispatch( setWebFetchStatus( { fetching: false, error, options: '' } ) );
+                return reply( error.message || error );
+            }
+            store.dispatch( setWebFetchStatus( { fetching: false, options: '' } ) );
 
             if ( isRangeReq )
             {
@@ -71,24 +89,21 @@ const safeRoute = {
             return reply( data.body )
                 .type( data.headers['Content-Type'] )
                 .header( 'Transfer-Encoding', 'chunked' )
-                .header( 'Accept-Ranges', 'bytes' )
+                .header( 'Accept-Ranges', 'bytes' );
         }
         catch ( e )
         {
             logger.error( e );
 
-            if( e.code && e.code === -302 )
+            if ( e.code && e.code === -302 )
             {
                 return reply( 'Requested Range Not Satisfiable' )
                     .code( 416 );
             }
-            else
-            {
-                return reply( e.message || e );
-            }
+            return reply( e.message || e );
         }
     }
-};
+} );
 
 
 export default safeRoute;
