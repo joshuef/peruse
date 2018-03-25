@@ -10,7 +10,7 @@ import logger from 'logger';
 import { addAuthNotification } from '../manageAuthNotifications';
 
 let store;
-let ipcEvent = null;
+const ipcEvent = null;
 
 
 export const CLIENT_TYPES = {
@@ -24,10 +24,26 @@ export const REQ_TYPES = {
     MDATA     : 'MDATA'
 };
 
+const allAuthCallBacks = {};
+
 
 export const setIPCStore = ( passedStore ) =>
 {
     store = passedStore;
+};
+
+
+/**
+ * Set promise callbacks to be retrievable after authentication handling.
+ * @param {[type]} req     [description]
+ * @param {[type]} resolve [description]
+ * @param {[type]} reject  [description]
+ */
+export const setAuthCallbacks = ( req, resolve, reject ) =>
+{
+    allAuthCallBacks[req.id] = {
+        resolve, reject
+    };
 };
 
 const parseResUrl = ( url ) =>
@@ -131,6 +147,7 @@ class ReqQueue
             {
                 return;
             }
+
             this.req.res = res;
 
             logger.info( 'IPC.js: another response being parsed.:', res );
@@ -205,7 +222,7 @@ const registerNetworkListener = ( e ) =>
     } );
 };
 
-const decodeRequest = ( e, req, type ) =>
+const decodeRequest = ( req, type ) =>
 {
     const isWebReq = ( type === CONSTANTS.CLIENT_TYPES.WEB );
     const isUnRegistered = req.isUnRegistered;
@@ -216,7 +233,6 @@ const decodeRequest = ( e, req, type ) =>
         isUnRegistered
     } );
 
-    ipcEvent = e;
 
     if ( isUnRegistered )
     {
@@ -265,20 +281,35 @@ const onAuthDecision = ( authData, isAllowed ) =>
         return Promise.reject( new Error( i18n.__( 'messages.should_not_be_empty', i18n.__( 'IsAllowed' ) ) ) );
     }
 
-    logger.info( 'inside on auth decision' );
+
     authenticator.encodeAuthResp( authData, isAllowed )
         .then( ( res ) =>
         {
             logger.info( 'IPC.js: Successfully encoded auth response. Sending.', authData );
             reqQ.req.res = res;
 
-            openExternal( res );
+            if ( allAuthCallBacks[reqQ.req.id] )
+            {
+                allAuthCallBacks[reqQ.req.id].resolve( res );
+                delete allAuthCallBacks[reqQ.req.id];
+            }
+            else
+            {
+                openExternal( res );
+            }
+
             reqQ.next();
         } )
         .catch( ( err ) =>
         {
             reqQ.req.error = err;
             logger.error( 'Auth decision error :: ', err.message );
+
+            if ( allAuthCallBacks[reqQ.req.id] )
+            {
+                allAuthCallBacks[reqQ.req.id].reject( err );
+                delete allAuthCallBacks[reqQ.req.id];
+            }
 
             reqQ.next();
         } );
@@ -301,15 +332,31 @@ const onContainerDecision = ( e, contData, isAllowed ) =>
         {
             reqQ.req.res = res;
             e.sender.send( 'onContDecisionRes', reqQ.req );
-            logger.info( errConst.CONTAINER_DECISION_RESP.msg(err) );
-            openExternal( res );
+
+            if ( allAuthCallBacks[reqQ.req.id] )
+            {
+                allAuthCallBacks[reqQ.req.id].resolve( res );
+                delete allAuthCallBacks[reqQ.req.id];
+            }
+            else
+            {
+                openExternal( res );
+            }
+
             reqQ.next();
         } )
         .catch( ( err ) =>
         {
             reqQ.req.error = err;
             e.sender.send( 'onContDecisionRes', reqQ.req );
-            logger.error( errConst.CONTAINER_DECISION_RESP.msg(err) );
+
+            if ( allAuthCallBacks[reqQ.req.id] )
+            {
+                allAuthCallBacks[reqQ.req.id].reject( err );
+                delete allAuthCallBacks[reqQ.req.id];
+            }
+
+            logger.error( errConst.CONTAINER_DECISION_RESP.msg( err ) );
             reqQ.next();
         } );
 };
@@ -331,16 +378,32 @@ const onSharedMDataDecision = ( e, data, isAllowed ) =>
         {
             reqQ.req.res = res;
             e.sender.send( 'onSharedMDataRes', reqQ.req );
-            logger.info( errConst.SHAREMD_DECISION_RESP.msg(err) );
-            openExternal( res );
+
+            if ( allAuthCallBacks[reqQ.req.id] )
+            {
+                allAuthCallBacks[reqQ.req.id].resolve( res );
+                delete allAuthCallBacks[reqQ.req.id];
+            }
+            else
+            {
+                openExternal( res );
+            }
+
             reqQ.next();
         } )
         .catch( ( err ) =>
         {
             reqQ.req.error = err;
-            logger.error( errConst.SHAREMD_DECISION_RESP.msg(err) );
+            logger.error( errConst.SHAREMD_DECISION_RESP.msg( err ) );
+
+            if ( !allAuthCallBacks[reqQ.req.id] )
+            {
+                allAuthCallBacks[reqQ.req.id].reject( res );
+                delete allAuthCallBacks[reqQ.req.id];
+                reqQ.next();
+            }
+
             e.sender.send( 'onSharedMDataRes', reqQ.req );
-            reqQ.next();
         } );
 };
 
