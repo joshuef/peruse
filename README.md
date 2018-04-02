@@ -26,6 +26,13 @@ Additionally, the `--preload` flag can be passed in order to get the following f
 
 `NODE_ENV=dev open Peruse.app --args --mock --new`
 
+Additionally, the `--new` flag can be passed in order to get the following features preloaded in `mock` network mode:
+- an [interactive tool](https://github.com/maidsafe/safe_examples/tree/master/safe_web_api_playground) to learn about the browser's SAFE network API, located at `safe://api.playground`
+- Account login credentials, both secret and password being `mocksafenetworkdeveloper`
+
+`NODE_ENV=dev open Peruse.app --args --mock --new`
+
+
 ### Compiling
 
 Make sure you have both git and [yarn](https://yarnpkg.com/en/docs/install) installed.
