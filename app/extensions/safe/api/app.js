@@ -149,7 +149,7 @@ module.exports._with_async_cb_initialise = (appInfo, enableLog, safeAppGroupId) 
  */
 module.exports.connect = (appHandle) => new Promise((resolve, reject) => {
   getObj(appHandle)
-      .then((obj) => obj.app.auth.genConnUri()
+      .then((obj) => obj.app.auth.genConnURI()
         .then((connReq) => ipc.sendAuthReq(connReq, true, (err, res) => {
           if (err) {
             return reject(new Error(errConst.ERR_CONNECT_INFO.msg(err)));
@@ -184,13 +184,13 @@ module.exports.connect = (appHandle) => new Promise((resolve, reject) => {
  *      _other: ['Insert', 'Update'] // request to insert and update in `_other` container
  *    },
  *    {own_container: true} // and we want our own container, too
- * ).then((authUri) => {
- *    console.log('App was authorised and auth URI received: ', authUri);
+ * ).then((authURI) => {
+ *    console.log('App was authorised and auth URI received: ', authURI);
  * });
  */
 module.exports.authorise = (appHandle, permissions, options) => new Promise((resolve, reject) => {
   getObj(appHandle)
-      .then((obj) => obj.app.auth.genAuthUri(permissions, options)
+      .then((obj) => obj.app.auth.genAuthURI(permissions, options)
         .then((authReq) => ipc.sendAuthReq(authReq, false, (err, res) => {
           if (err) {
             return reject(new Error(errConst.ERR_AUTH_APP.msg(err)));
@@ -209,7 +209,7 @@ module.exports.authorise = (appHandle, permissions, options) => new Promise((res
  * @name window.safeApp.connectAuthorised
  *
  * @param {SAFEAppHandle} appHandle the app handle
- * @param {AuthURI} authUri granted auth URI
+ * @param {AuthURI} authURI granted auth URI
  *
  * @returns {Promise<SAFEAppHandle>} same app handle
  *
@@ -222,13 +222,13 @@ module.exports.authorise = (appHandle, permissions, options) => new Promise((res
  *    },
  *    {own_container: true} // and we want our own container, too
  * )
- * .then((authUri) => window.safeApp.connectAuthorised(appHandle, authUri))
+ * .then((authURI) => window.safeApp.connectAuthorised(appHandle, authURI))
  * .then(_ => {
  *    console.log('The app was authorised & a session was created with the network');
  * });
  */
-module.exports.connectAuthorised = (appHandle, authUri) => getObj(appHandle)
-    .then((obj) => obj.app.auth.loginFromURI(authUri))
+module.exports.connectAuthorised = (appHandle, authURI) => getObj(appHandle)
+    .then((obj) => obj.app.auth.loginFromURI(authURI))
     .then(() => appHandle);
 
 /**
@@ -245,13 +245,13 @@ module.exports.connectAuthorised = (appHandle, authUri) => getObj(appHandle)
  * window.safeApp.authoriseContainer(
  *   appHandle, // the app handle obtained when invoking `initialise`
  *   { _publicNames: ['Update'] } // request to update into `_publicNames` container
- * ).then((authUri) => {
- *    console.log('App was authorised and auth URI received: ', authUri);
+ * ).then((authURI) => {
+ *    console.log('App was authorised and auth URI received: ', authURI);
  * });
  */
 module.exports.authoriseContainer = (appHandle, permissions) => new Promise((resolve, reject) => {
   getObj(appHandle)
-      .then((obj) => obj.app.auth.genContainerAuthUri(permissions)
+      .then((obj) => obj.app.auth.genContainerAuthURI(permissions)
         .then((authReq) => ipc.sendAuthReq(authReq, false, (err, res) => {
           if (err) {
             return reject(new Error(errConst.ERR_AUTH_APP.msg(err)));
@@ -288,7 +288,7 @@ module.exports.authoriseContainer = (appHandle, permissions) => new Promise((res
  */
 module.exports.authoriseShareMd = (appHandle, permissions) => new Promise((resolve, reject) => {
   getObj(appHandle)
-      .then((obj) => obj.app.auth.genShareMDataUri(permissions)
+      .then((obj) => obj.app.auth.genShareMDataURI(permissions)
         .then((authReq) => ipc.sendAuthReq(authReq, false, (err, res) => {
           if (err) {
             return reject(new Error(errConst.ERR_AUTH_APP.msg(err)));
@@ -476,8 +476,8 @@ module.exports.canAccessContainer = (appHandle, name, permissions) => getObj(app
  *   vendor: 'MaidSafe.net Ltd'
  * };
  * const appHandle = await window.safeApp.initialise(appInfo);
- * const authUri = await window.safeApp.authorise(appHandle, permissions, {});
- * await window.safeApp.connectAuthorised(appHandle, authUri);
+ * const authURI = await window.safeApp.authorise(appHandle, permissions, {});
+ * await window.safeApp.connectAuthorised(appHandle, authURI);
  * await window.safeApp.refreshContainersPermissions(appHandle);
  *
  * const containerHandle = await window.safeApp.getContainer(appHandle, '_public');
@@ -578,12 +578,12 @@ module.exports.getContainer = (appHandle, name) => getObj(appHandle)
  * @name window.safeApp.readGrantedPermissions
  *
  * @param {SAFEAppHandle} appHandle the app handle
- * @param {AuthURI} authUri granted auth URI
+ * @param {AuthURI} authURI granted auth URI
  *
  * @returns {Promise<Array<ContainersPerms>>} list of granted containers permissions
  *
  * @example // Reading granted container permission from an auth URI
- * const authUri = await window.safeApp.authorise(
+ * const authURI = await window.safeApp.authorise(
  *    appHandle, // the app handle obtained when invoking `initialise`
  *    {
  *      _public: ['Insert'], // request to insert into `_public` container
@@ -591,12 +591,12 @@ module.exports.getContainer = (appHandle, name) => getObj(appHandle)
  *    },
  *    {own_container: true} // and we want our own container, too
  *  );
- * const perms = await window.safeApp.readGrantedPermissions(authUri);
+ * const perms = await window.safeApp.readGrantedPermissions(authURI);
  * console.log('JSON object representation of granted containers permmissions: ', perms);
  *
  */
-module.exports.readGrantedPermissions = (appHandle, authUri) => getObj(appHandle)
-    .then((obj) => obj.app.auth.readGrantedPermissions(authUri));
+module.exports.readGrantedPermissions = (appHandle, authURI) => getObj(appHandle)
+    .then((obj) => obj.app.auth.readGrantedPermissions(authURI));
 
 /**
  * Reconnect SAFEApp instance if connection is disconnected
