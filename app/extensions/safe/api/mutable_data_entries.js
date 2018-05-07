@@ -3,7 +3,7 @@ const { genHandle, getObj, forEachHelper, freeObj } = require('./helpers');
 module.exports.manifest = {
   len: 'promise',
   get: 'promise',
-  _with_cb_forEach: 'readable',
+  listEntries: 'promise',
   insert: 'promise',
   mutate: 'promise',
   free: 'sync'
@@ -46,24 +46,22 @@ module.exports.get = (entriesHandle, keyName) => getObj(entriesHandle)
     .then((obj) => obj.netObj.get(keyName));
 
 /**
- * Iterate over the entries, execute the function every time
- * @name window.safeMutableDataEntries.forEach
+ * Returns array of entry objects
+ * @name window.safeMutableDataEntries.listEntries
  *
  * @param {EntriesHandle} entriesHandle the Entries handle
- * @param {function(Buffer, ValueVersion)} fn the function to call
  *
- * @returns {Promise} resolves once the iteration is done
+ * @returns {Promise<Array>} entries
  *
- * @example // Iterating over the entries of a MutableData:
+ * @example // Returning entries of a MutableData:
  * window.safeMutableData.getEntries(mdHandle)
- *    .then((entriesHandle) => window.safeMutableDataEntries.forEach(entriesHandle, (k, v) => {
- *          console.log('Key: ', k.toString());
- *          console.log('Value: ', v.buf.toString());
- *          console.log('Version: ', v.version);
- *       }).then(_ => console.log('Iteration finished'))
- *    );
+ *    .then((entriesHandle) => window.safeMutableDataEntries.listEntries(entriesHandle)
+ *    .then((entriesArray) => {
+ *        console.log(entriesArray);
+ *    });
 */
-module.exports._with_cb_forEach = (entriesHandle) => forEachHelper(entriesHandle); // eslint-disable-line max-len, no-underscore-dangle
+module.exports.listEntries = (entriesHandle) => getObj(entriesHandle)
+    .then((obj) => obj.netObj.listEntries());
 
 /**
  * Insert a new entry. It will fail if the entry already exists or if
