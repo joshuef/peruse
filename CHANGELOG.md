@@ -1,6 +1,9 @@
 # Peruse Change Log
 All notable changes to this project will be documented in this file.
 
+[Unreleased]
+- changes naming of api functions and terms to be consistent with itself and safe_app_nodejs
+
 #### [0.5.3]
 ### Changed 
 - Electron to 1.8.4

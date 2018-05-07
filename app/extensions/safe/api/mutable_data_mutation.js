@@ -2,7 +2,7 @@ const { getObj, freeObj } = require('./helpers');
 
 module.exports.manifest = {
   insert: 'promise',
-  remove: 'promise',
+  delete: 'promise',
   update: 'promise',
   free: 'sync'
 };
@@ -31,10 +31,10 @@ module.exports.insert = (mutationHandle, keyName, value) => getObj(mutationHandl
 
 /**
  * Store a new `Remove`-action in the transaction
- * @name window.safeMutableDataMutation.remove
+ * @name window.safeMutableDataMutation.delete
  *
  * @param {MutationHandle} mutationHandle the Mutation handle
- * @param {(String|Buffer)} keyName the key of the entry you want to remove
+ * @param {(String|Buffer)} keyName the key of the entry you want to delete
  * @param {Number} version the version successor, to confirm you are
  *        actually asking for the right state
  *
@@ -45,14 +45,14 @@ module.exports.insert = (mutationHandle, keyName, value) => getObj(mutationHandl
  * window.safeMutableData.newMutation(appHandle)
  *    .then((h) => mutationHandle = h)
  *    .then(_ => window.safeMutableData.get(mdHandle, 'key1'))
- *    .then((value) => window.safeMutableDataMutation.remove(
+ *    .then((value) => window.safeMutableDataMutation.delete(
  *      mutationHandle, 'key1', value.version + 1))
  *    .then(_ => window.safeMutableData.applyEntriesMutation(mdHandle, mutationHandle))
  *    .then(_ => console.log(
- *      'Entry was removed from the MutableData and committed to the network'));
+ *      'Entry was deleted from the MutableData and committed to the network'));
 */
-module.exports.remove = (mutationHandle, keyName, version) => getObj(mutationHandle)
-    .then((obj) => obj.netObj.remove(keyName, version));
+module.exports.delete = (mutationHandle, keyName, version) => getObj(mutationHandle)
+    .then((obj) => obj.netObj.delete(keyName, version));
 
 /**
  * Store a `Update`-action in the transaction
