@@ -60,7 +60,7 @@ let mainWindow = null;
 // Do any pre app extension work
 preAppLoad();
 
-// Apply MockVault if wanted for prealod
+// Apply MockVault if wanted for preload
 if ( process.argv.includes('--mock') && process.argv.includes('--preload') )
 {
     try{
@@ -73,7 +73,6 @@ if ( process.argv.includes('--mock') && process.argv.includes('--preload') )
     {
         logger.error('Error preloading MockVault')
     }
-
 };
 
 protocol.registerStandardSchemes( pkg.build.protocols.schemes, { secure: true } );
