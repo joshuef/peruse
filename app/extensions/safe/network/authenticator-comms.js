@@ -34,6 +34,7 @@ export const authFromInternalResponse = async ( res, isAuthenticated ) =>
         // for webFetch app only
         peruseAppObj = await peruseAppObj.auth.loginFromUri( res );
         // When running function below, error is thrown that lib.test_simulate_network_disconnect is not a function
+        logger.info('NODE_ENV: ', process.env.NODE_ENV);
         //peruseAppObj.auth.simulateNetworkDisconnect();
     }
     catch ( err )
