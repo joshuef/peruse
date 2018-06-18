@@ -30,18 +30,24 @@ const initialState = {
             {
                 name: 'Joshuef',
                 nick: 'joshuef',
+                id: 1,
                 inbox: [],
                 pk:     '',
-                isDefault: true
+                isDefault: true,
+                isSelected : true
             },
             {
                 name: 'Josh Wilson',
                 nick: 'joshuef',
+                id: 2,
                 inbox: [],
                 pk:     '',
-                isDefault: false
+                isDefault: false,
+                isSelected : false
+
             }
-        ]
+        ],
+        showingWebIdDropdown : true
     },
     webFetch : {
         fetching : false,

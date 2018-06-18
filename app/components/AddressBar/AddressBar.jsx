@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import MdStar from 'react-icons/lib/md/star';
 import MdStarOutline from 'react-icons/lib/md/star-outline';
 import { Column, Row, InputField } from 'nessie-ui';
-// import ButtonsLHS from 'components/AddressBar/ButtonsLHS';
+import ButtonsLHS from 'components/AddressBar/ButtonsLHS';
 
 import styles from './addressBar.css';
 
@@ -158,6 +158,7 @@ export default class AddressBar extends Component
 
     render()
     {
+        const props = this.props;
         const { address } = this.state;
         const { isSelected, isBookmarked } = this.props;
 
@@ -165,11 +166,12 @@ export default class AddressBar extends Component
             <div className={ `${styles.container} js-address` } >
                 <Row align="left" verticalAlign="middle" gutters="S">
                     <Column size="content">
-                        {/* <ButtonsLHS
+                        <ButtonsLHS
                             handleBack={ this.handleBack }
                             handleForward={ this.handleForward }
                             handleRefresh={ this.handleRefresh }
-                        /> */}
+                            {...props}
+                        />
                     </Column>
                     <Column className={ styles.addressBarColumn }>
                         <InputField

@@ -1,1 +1,1 @@
-export default from './ButtonsLHS.jsx';
+export default from './ButtonsLHS';

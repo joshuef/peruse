@@ -56,6 +56,25 @@ export default function peruseApp( state = initialState, action )
             };
         }
 
+        case TYPES.SET_CURRENT_WEB_ID:
+        {
+            const targetWebId = payload;
+            // const { targetWebId, tabIndex } = paylod;
+            const oldWebIds = state.webIds;
+            let newWebIds = [ ...oldWebIds ];
+
+            newWebIds = newWebIds.map( webId => {
+                let updatedId = { ...webId };
+
+                updatedId.isSelected = targetWebId === webId.id;
+                return updatedId
+            });
+
+            return { ...state,
+                webIds : newWebIds,
+            };
+        }
+
         default:
             return state;
     }

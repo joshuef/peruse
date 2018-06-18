@@ -166,6 +166,8 @@ class Browser extends Component
 
         } = this.props;
 
+        const props = this.props;
+
         // only show the first notification without a response.
         const notification = notifications.filter( n => !n.response )[0];
 
@@ -211,6 +213,9 @@ class Browser extends Component
                     updateActiveTab={ updateActiveTab }
                     activeTabBackwards={ activeTabBackwards }
                     activeTabForwards={ activeTabForwards }
+
+                    { ...props } // pass all props for extensibility
+
                     ref={ ( c ) =>
                     {
                         this.address = c;

@@ -82,4 +82,24 @@ describe( 'Peruse App reducer', () =>
     });
 
 
+
+
+    describe( 'SET_CURRENT_WEB_ID', () =>
+    {
+        it( 'should handle updating the currently selected WebID', () =>
+        {
+            const payload = 2;
+            const newState = peruseApp( safeInitialState, {
+                type    : TYPES.SET_CURRENT_WEB_ID,
+                payload
+            } );
+            expect( newState.webIds[0] ).toMatchObject( {
+                isSelected: false
+            });
+            expect( newState.webIds[1] ).toMatchObject( {
+                isSelected: true
+            });
+        } );
+    });
+
 })
