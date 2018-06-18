@@ -25,7 +25,23 @@ const initialState = {
         authResponseUri : '',
         savedBeforeQuit : false,
         saveStatus      : '',
-        isMock          : null
+        isMock          : null,
+        webIds          : [
+            {
+                name: 'Joshuef',
+                nick: 'joshuef',
+                inbox: [],
+                pk:     '',
+                isDefault: true
+            },
+            {
+                name: 'Josh Wilson',
+                nick: 'joshuef',
+                inbox: [],
+                pk:     '',
+                isDefault: false
+            }
+        ]
     },
     webFetch : {
         fetching : false,

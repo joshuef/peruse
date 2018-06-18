@@ -10,6 +10,7 @@ import TabContents from 'components/TabContents';
 import styles from './browser.css';
 import logger from 'logger';
 
+import extendComponent from 'utils/extendComponent';
 import { wrapBrowserComponent } from 'extensions/components';
 
 
@@ -198,6 +199,7 @@ class Browser extends Component
                 <AddressBar
                     key={ 2 }
                     address={ activeTabAddress }
+                    activeTab={ activeTab }
                     onSelect={ deselectAddressBar }
                     onFocus={ selectAddressBar }
                     onBlur={ blurAddressBar }
@@ -243,20 +245,4 @@ class Browser extends Component
 }
 
 
-
-const extendComponent = ( WrappedComponent ) =>
-{
-    return class Browser extends Component {
-        constructor(props) {
-            super(props);
-
-            this.EnWrappedComponent = wrapBrowserComponent( WrappedComponent );
-      }
-      render() {
-          const { EnWrappedComponent } = this;
-          return <EnWrappedComponent {...this.props} />;
-      }
-    }
-}
-
-export default extendComponent( Browser );
+export default extendComponent( Browser, wrapBrowserComponent );
