@@ -13,10 +13,7 @@ const pendingCalls = {};
 class WebIdEvents extends EventEmitter {}
 
 const webIdEventEmitter = new WebIdEvents();
-if (typeof window !== 'undefined' )
-{
-    window.webIdEventEmitter = webIdEventEmitter;
-}
+
 
 const getCurrentWebId = ( webIds ) =>
 {
@@ -34,8 +31,13 @@ const onPreload = ( store ) =>
 
 }
 
-const manageWebIdUpdates = ( store, win = window ) =>
+export const manageWebIdUpdates = ( store, win = window ) =>
 {
+    if (typeof win !== 'undefined' )
+    {
+        win.webIdEventEmitter = webIdEventEmitter;
+    }
+
     //bonus subscriber.
     store.subscribe( async( ) =>
     {
