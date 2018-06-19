@@ -17,10 +17,6 @@ if (typeof window !== 'undefined' )
 {
     window.webIdEventEmitter = webIdEventEmitter;
 }
-webIdEventEmitter.on('updateWebId', ( data ) => {
-  console.log('an updateId occurred!', data);
-});
-
 
 const getCurrentWebId = ( webIds ) =>
 {
@@ -50,7 +46,7 @@ const manageWebIdUpdates = ( store, win = window ) =>
         if( newCurrentWebId !== win.currentWebId )
         {
             win.currentWebId = newCurrentWebId;
-            webIdEventEmitter.emit('updateWebId', currentWebId );
+            webIdEventEmitter.emit('update', currentWebId );
 
         }
 

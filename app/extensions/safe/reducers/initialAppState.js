@@ -38,7 +38,7 @@ const initialState = {
             },
             {
                 name: 'Josh Wilson',
-                nick: 'joshuef',
+                nick: 'not joshuef',
                 id: 2,
                 inbox: [],
                 pk:     '',
