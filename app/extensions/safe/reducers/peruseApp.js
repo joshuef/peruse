@@ -75,6 +75,15 @@ export default function peruseApp( state = initialState, action )
             };
         }
 
+        case TYPES.SHOW_WEB_ID_DROPDOWN:
+        {
+            const iconStatus = payload;
+
+            return { ...state,
+                showingWebIdDropdown : iconStatus,
+            };
+        }
+
         default:
             return state;
     }

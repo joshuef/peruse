@@ -102,4 +102,24 @@ describe( 'Peruse App reducer', () =>
         } );
     });
 
+    describe( 'SHOW_WEB_ID_DROPDOWN', () =>
+    {
+        it( 'should handle updating the icon status', () =>
+        {
+            const payload = true;
+            const newState = peruseApp( safeInitialState, {
+                type    : TYPES.SHOW_WEB_ID_DROPDOWN,
+                payload
+            } );
+            expect( newState.showingWebIdDropdown ).toBe( true )
+
+            const newState2 = peruseApp( safeInitialState, {
+                type    : TYPES.SHOW_WEB_ID_DROPDOWN,
+                payload: false
+            } );
+            expect( newState2.showingWebIdDropdown ).toBe( false)
+
+        } );
+    });
+
 })

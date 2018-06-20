@@ -4,7 +4,7 @@ import { ipcRenderer, remote } from 'electron';
 import PropTypes from 'prop-types';
 import MdStar from 'react-icons/lib/md/star';
 import MdStarOutline from 'react-icons/lib/md/star-outline';
-import { Column, Row, InputField } from 'nessie-ui';
+import { Column, Grid, InputField } from 'nessie-ui';
 import ButtonsLHS from 'components/AddressBar/ButtonsLHS';
 
 import styles from './addressBar.css';
@@ -164,7 +164,7 @@ export default class AddressBar extends Component
 
         return (
             <div className={ `${styles.container} js-address` } >
-                <Row align="left" verticalAlign="middle" gutters="S">
+                <Grid align="left" verticalAlign="middle" gutters="S" className={ styles.addressBar }>
                     <Column size="content">
                         <ButtonsLHS
                             handleBack={ this.handleBack }
@@ -195,7 +195,7 @@ export default class AddressBar extends Component
                         />
                     </Column>
                     <Column size="content">
-                        <Row gutters="S">
+                        <Grid gutters="S">
                             <Column align="left">
                                 {
                                     isBookmarked &&
@@ -206,9 +206,9 @@ export default class AddressBar extends Component
                                         <MdStarOutline className={styles.buttonIcon} onClick={this.handleBookmarking}/>
                                 }
                             </Column>
-                        </Row>
+                        </Grid>
                     </Column>
-                </Row>
+                </Grid>
             </div>
         );
     }

@@ -14,7 +14,10 @@ export const TYPES = {
     //read status from network
     RECEIVED_AUTH_RESPONSE : 'RECEIVED_AUTH_RESPONSE',
 
-    RECONNECT_SAFE_APP          : 'RECONNECT_SAFE_APP'
+    RECONNECT_SAFE_APP          : 'RECONNECT_SAFE_APP',
+
+    //UI actions.
+    SHOW_WEB_ID_DROPDOWN : 'SHOW_WEB_ID_DROPDOWN'
 };
 
 export const {
@@ -31,7 +34,9 @@ export const {
 
     reconnectSafeApp,
 
-    resetStore
+    resetStore,
+
+    showWebIdDropdown
 } = createActions(
     TYPES.SET_APP_STATUS,
     TYPES.SET_NETWORK_STATUS,
@@ -44,5 +49,7 @@ export const {
 
     TYPES.RECEIVED_AUTH_RESPONSE,
 
-    TYPES.RECONNECT_SAFE_APP
+    TYPES.RECONNECT_SAFE_APP,
+
+    TYPES.SHOW_WEB_ID_DROPDOWN
 );
