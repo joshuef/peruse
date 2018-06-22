@@ -3,6 +3,8 @@ import path from 'path';
 import i18n from 'i18n';
 import ffiLoader from 'extensions/safe/ffi/lib';
 import client from 'extensions/safe/ffi/authenticator';
+import { authFromInternalResponse } from 'extensions/safe/network';
+import { initialiseApp } from '@maidsafe/safe-node-app';
 import * as helper from './helper';
 
 import crypto from 'crypto';
@@ -62,6 +64,24 @@ describe( 'Authenticator functions', () =>
                     {
                         should( res ).be.String();
                         should( res.indexOf( 'safe-' ) ).be.not.equal( -1 );
+                        return resolve();
+                    } );
+            } )
+        ) );
+
+        it( 'this is a new test for disconnecting and reconnecting', () => (
+            new Promise( async ( resolve ) =>
+            {
+                const networkStateCb = (state) => {
+                  console.log('network state change'); 
+                };
+                const app = await initialiseApp( APP_INFO.info, networkStateCb, appOptions );
+                const authReq = await app.auth.genConnUri( {} );
+                client.decodeRequest( authReq )
+                    .then( async ( res ) =>
+                    {
+                        logger.info('decodeRequest response: ', res);
+                        await authFromInternalResponse(res);
                         return resolve();
                     } );
             } )

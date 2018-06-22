@@ -33,6 +33,9 @@ export const authFromInternalResponse = async ( res, isAuthenticated ) =>
     {
         // for webFetch app only
         peruseAppObj = await peruseAppObj.auth.loginFromUri( res );
+        // When running function below, error is thrown that lib.test_simulate_network_disconnect is not a function
+        logger.info('NODE_ENV: ', process.env.NODE_ENV);
+        //peruseAppObj.auth.simulateNetworkDisconnect();
     }
     catch ( err )
     {
@@ -94,7 +97,29 @@ export const initAnon = async ( passedStore ) =>
     try
     {
         // does it matter if we override?
-        peruseAppObj = await initialiseApp( APP_INFO.info, null, appOptions );
+        const networkStateCb = (state) => {
+          // Based on latest updates in safe_app_nodes, I should at least see this callback called once, when network connection changes from INIT to CONNECTED.
+          logger.info('net callback state: ', state);
+          store.dispatch( peruseAppActions.setNetworkStatus( state ) );
+          if(state === SAFE.NETWORK_STATE.DISCONNECTED)
+          {
+            if(store)
+            {
+              store.dispatch( notificationActions.addNotification(
+                {
+                  text: `Network state: ${state}. Reconnecting...`,
+                  type: 'error',
+                  onDismiss: notificationActions.clearNotification
+                } 
+              ));
+            }
+          }
+          if(state === SAFE.NETWORK_STATE.CONNECTED && store.getState().peruseApp.networkState === SAFE.NETWORK_STATE.DISCONNECTED)
+          {
+            store.dispatch(notificationActions.clearNotification()); 
+          }
+        };
+        peruseAppObj = await initialiseApp( APP_INFO.info, networkStateCb, appOptions );
         const authReq = await peruseAppObj.auth.genConnUri( {} );
 
         const authType = parseSafeAuthUrl( authReq.uri );
