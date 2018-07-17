@@ -56,6 +56,56 @@ export default function peruseApp( state = initialState, action )
             };
         }
 
+        case TYPES.SET_CURRENT_WEB_ID:
+        {
+            const targetWebId = payload;
+            // const { targetWebId, tabIndex } = paylod;
+            const oldWebIds = state.webIds;
+            let newWebIds = [ ...oldWebIds ];
+
+            newWebIds = newWebIds.map( webId => {
+                let updatedId = { ...webId };
+
+                updatedId.isSelected = targetWebId['@id'] === webId['@id'];
+                return updatedId
+            });
+
+            return { ...state,
+                webIds : newWebIds,
+            };
+        }
+
+        case TYPES.SET_AVAILABLE_WEB_IDS: {
+            const ids = payload || [];
+
+            state.webIds.forEach( theId =>
+            {
+                if( !theId.isSelected) return;
+
+                const foundIdIndex = payload.findIndex( payloadId => payloadId["@id"] === theId["@id"] );
+                const foundId = payload[foundIdIndex];
+                foundId.isSelected = true;
+            })
+            return {
+                ...state,
+                webIds : [ ...ids ]
+            };
+        }
+
+        case TYPES.SHOW_WEB_ID_DROPDOWN:
+        {
+            const iconStatus = payload;
+
+            return { ...state,
+                showingWebIdDropdown : iconStatus,
+            };
+        }
+
+        case TYPES.RESET_STORE:
+        {
+            return { ...initialState };
+        }
+
         default:
             return state;
     }

@@ -3,6 +3,22 @@
 ## About
 An electron web browser. Built to be a basis. Extendable by design.
 
+## WebApp Development 
+
+Safe uses the RDF compliant WebId system for easily enabling user account management.
+
+You can retrieve the current webId via `window.currentWebId`;
+
+You can listen for changes via the event emitter, `window.webIdEventEmitter`, eg:
+
+```js
+webIdEventEmitter.on('update', ( webId ) => {
+  console.log('an updateId occurred!', webId);
+});
+
+```
+
+
 ## Development
 
 There are `dev-` prefixed releases of Peruse available. These come with both live network and mock network libs, bundled.
@@ -24,7 +40,7 @@ Additionally, the `--preload` flag can be passed in order to get the following f
 - an [interactive tool](https://github.com/maidsafe/safe_examples/tree/master/safe_web_api_playground) to learn about the browser's SAFE network API, located at `safe://api.playground`
 - Account login credentials, both secret and password being `mocksafenetworkdeveloper`
 
-`NODE_ENV=dev open Peruse.app --args --mock --new`
+`NODE_ENV=dev open Peruse.app --args --mock --preload`
 
 ### Compiling
 

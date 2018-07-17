@@ -1,24 +1,84 @@
 import pkg from 'appPackage';
+import EventEmitter from 'events';
 import logger from 'logger';
 import * as remoteCallActions from 'actions/remoteCall_actions';
 import safe from '@maidsafe/safe-node-app';
 import { PROTOCOLS, CONFIG } from 'appConstants';
 import { manifest as authManifest } from 'extensions/safe/auth-api/manifest';
 
+// shim for rdflib.js
+const _setImmediate = setImmediate
+ const _clearImmediate = clearImmediate
+ process.once('loaded', () => {
+   global.setImmediate = _setImmediate
+   global.clearImmediate = _clearImmediate
+ })
+
 
 const VERSION = pkg.version;
 const pendingCalls = {};
 
+class WebIdEvents extends EventEmitter {}
+
+const webIdEventEmitter = new WebIdEvents();
+
+
+const getCurrentWebId = ( webIds ) =>
+{
+    const webId = webIds.find( webId => webId.isSelected );
+
+    // TODO: Should return error if non set?
+    return webId || {};
+}
+
 
 const onPreload = ( store ) =>
 {
-    setupPreloadedSafeAuthApis( store )
+    setupPreloadedSafeAuthApis( store );
+
+    manageWebIdUpdates( store );
+
+
+}
+
+export const manageWebIdUpdates = ( store, win = window ) =>
+{
+    if (typeof win !== 'undefined' )
+    {
+        win.webIdEventEmitter = webIdEventEmitter;
+    }
+
+    //bonus subscriber.
+    store.subscribe( async( ) =>
+    {
+        const state = store.getState();
+        const webIds = state.peruseApp.webIds;
+
+        if( !webIds.length ) return;
+
+        const newCurrentWebId = getCurrentWebId( webIds );
+
+        const currentWebId = win.currentWebId || {};
+
+        if( typeof newCurrentWebId['@id'] !== 'undefined' &&
+            newCurrentWebId['@id'] !== currentWebId['@id'] )
+        {
+            win.currentWebId = newCurrentWebId;
+            webIdEventEmitter.emit('update', win.currentWebId );
+
+        }
+
+    })
 }
 
 export const setupSafeAPIs = ( store, win = window ) =>
 {
     logger.info( 'Setup up SAFE Dom API via @maidsafe/safe-node-app' );
-    win.safe = { ...safe };
+
+    // use from passed object if present (for testing)
+    win.safe = win.safe || { ...safe };
+    win.process = null;
+
 
     win.safe.initialiseApp = async ( appInfo, netStateCallback, options ) =>
     {
@@ -69,6 +129,7 @@ export const setupSafeAPIs = ( store, win = window ) =>
 
         return await createRemoteCall( 'authenticateFromUriObject', store )( authObj );
     };
+
 };
 
 
@@ -185,17 +246,23 @@ export const setupPreloadedSafeAuthApis = ( store ) =>
 
                 callbackArgs = [theCall.response];
 
-                if ( theCall.isListener )
+                // // hack due to auth webapp expectations. :| bleugh.
+                if ( theCall.name === 'setNetworkListener' )
                 {
-                    // error first
+                    // error first for olde auth listeners
                     callPromises.resolve( null, ...callbackArgs );
+
                 }
-                callPromises.resolve( ...callbackArgs );
+                else
+                {
+                    callPromises.resolve( ...callbackArgs );
+                }
+
+                delete pendingCalls[theCall.id];
+
                 store.dispatch( remoteCallActions.removeRemoteCall(
                     theCall
                 ) );
-
-                delete pendingCalls[theCall.id];
 
             }
             else if ( theCall.error && callPromises.reject )
