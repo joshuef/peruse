@@ -26,6 +26,8 @@ All notable changes to this project will be documented in this file.
 - Functioning share MD request
 - Electron close app process on window close
 - Link to invite.maidsafe.net no longer opens multiple external tabs
+- Closing a tab to the left of the active tab results in rendering of correct webview
+- Properly handles http links when triggering did-fail-load events to prevent external tab spamming and to close respective tab in Peruse
 
 ### Added
 - background process
