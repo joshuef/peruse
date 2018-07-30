@@ -38,7 +38,7 @@ export const setClientToMainBrowserWindow = async ( app ) =>
         }
     }
 
-    console.log('AFTER ALL CEHCKINGGGGGGG', peruseBgWindowIndex );
+    console.log('AFTER ALL CEHCKINGGGGGGG', peruseBrowserWindowIndex );
     await client.windowByIndex( peruseBrowserWindowIndex );
 };
 
