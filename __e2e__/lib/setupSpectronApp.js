@@ -69,7 +69,7 @@ export const beforeAllTests =  async ( app ) =>
 export const windowLoaded = async ( app ) =>
 {
     console.log('checking window loadeddddd')
-    await delay(3500)
+    await delay(7500)
     await setClientToMainBrowserWindow( app );
     // const browser = app.client;
     let loaded = await app.browserWindow.isVisible() ;
