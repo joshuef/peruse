@@ -8,7 +8,14 @@ import {
     setClientToBackgroundProcessWindow
 } from './lib/browser-driver';
 import { BROWSER_UI, WAIT_FOR_EXIST_TIMEOUT } from './lib/constants';
-import { setupSpectronApp, isCI, travisOS } from './lib/setupSpectronApp';
+import {
+    setupSpectronApp
+    , isCI
+    , travisOS
+    , afterAllTests
+    , beforeAllTests
+    , windowLoaded
+} from 'spectron-lib/setupSpectronApp';
 
 jest.unmock( 'electron' );
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 65000;
@@ -30,24 +37,18 @@ describe( 'main window', () =>
 
     beforeAll( async () =>
     {
-        await app.start();
-        // console.log('starting', app)
-        await app.client.waitUntilWindowLoaded();
+        await beforeAllTests(app)
     } );
 
-    afterAll( () =>
+    afterAll( async () =>
     {
-        if ( app && app.isRunning() )
-        {
-            return app.stop();
-        }
+        await afterAllTests(app)
     } );
+
 
     test( 'window loaded', async () =>
     {
-        let loaded = await app.browserWindow.isVisible() ;
-        await delay(3500)
-        return loaded;
+        expect( await windowLoaded( app ) ).toBeTruthy()
     });
 
     //
@@ -65,25 +66,6 @@ describe( 'main window', () =>
     //     // expect( logs ).toHaveLength( 0 );
     // } );
 
-    //
-    // it( 'cannot open http:// protocol links', async () =>
-    // {
-    //     const { client } = app;
-    //     const tabIndex = await newTab( app );
-    //     await navigateTo( app, 'http://example.com' );
-    //     await client.waitForExist( BROWSER_UI.ADDRESS_INPUT );
-    //
-    //     // const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );
-    //
-    //     await client.windowByIndex( tabIndex );
-    //     await client.pause( 2500 );
-    //
-    //     const clientUrl = await client.getUrl();
-    //     const parsedUrl = urlParse( clientUrl );
-    //
-    //     expect( parsedUrl.protocol ).toBe( 'about:' );
-    //
-    // } );
 
     it( 'can open a new tab + set address', async () =>
     {
@@ -98,7 +80,7 @@ describe( 'main window', () =>
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );
 
         await client.windowByIndex( tabIndex );
-        // await client.pause( 1500 );
+        await delay( 500 );
 
         const clientUrl = await client.getUrl();
 

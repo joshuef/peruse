@@ -63,7 +63,8 @@ export default class Tab extends Component
         this.reloadIfActive = ::this.reloadIfActive;
 
         this.debouncedWebIdUpdateFunc = _.debounce( this.updateTheIdInWebview, 300 );;
-        this.debouncedUpdateTab = _.debounce( this.updateThisTab, 300 );;
+        // this.debouncedUpdateTab = this.updateThisTab;
+        this.debouncedUpdateTab = _.debounce( this.updateThisTab, 100 );
     }
 
     isDevToolsOpened = () =>

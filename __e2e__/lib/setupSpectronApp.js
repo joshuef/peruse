@@ -11,6 +11,11 @@ export const travisOS = process.env.TRAVIS_OS_NAME || '';
 export const isUnpacked = process.env.IS_UNPACKED || false;
 export const isTestingPackagedApp = process.env.IS_PACKED || false;
 
+import {
+    delay,
+    setClientToMainBrowserWindow
+} from './browser-driver';
+
 export const setupSpectronApp = ( ) =>
 {
     const isMac = process.platform === 'darwin'
@@ -41,3 +46,33 @@ export const setupSpectronApp = ( ) =>
     return app;
 
 }
+
+
+export const afterAllTests = ( app ) =>
+{
+    console.log('that isafterall')
+    if ( app && app.isRunning() )
+    {
+        console.log('app is running so sotp it')
+        return app.stop();
+    }
+}
+
+export const beforeAllTests =  async ( app ) =>
+{
+    await app.start();
+    // console.log('starting', app)
+    return app.client.waitUntilWindowLoaded();
+} ;
+
+
+export const windowLoaded = async ( app ) =>
+{
+    console.log('checking window loadeddddd')
+    await delay(3500)
+    await setClientToMainBrowserWindow( app );
+    // const browser = app.client;
+    let loaded = await app.browserWindow.isVisible() ;
+    console.log('checking window is it vissss', loaded)
+    return loaded;
+};

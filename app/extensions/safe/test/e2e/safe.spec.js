@@ -11,7 +11,15 @@ import {
 } from 'spectron-lib/browser-driver';
 import { createSafeApp, createRandomDomain } from './lib/safe-helpers';
 import { BROWSER_UI, AUTH_UI, WAIT_FOR_EXIST_TIMEOUT } from 'spectron-lib/constants';
-import { setupSpectronApp, isCI,isTestingPackagedApp, travisOS } from 'spectron-lib/setupSpectronApp';
+import {
+    setupSpectronApp
+    , isCI
+    , travisOS
+    , afterAllTests
+    , beforeAllTests
+    , windowLoaded
+    , isTestingPackagedApp
+} from 'spectron-lib/setupSpectronApp';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
@@ -26,29 +34,21 @@ describe( 'SAFE network webFetch operation', async () =>
         vendor: 'Peruse'
     };
 
-
     beforeAll( async () =>
     {
-
-        await app.start();
-        await setClientToMainBrowserWindow( app );
-        await app.client.waitUntilWindowLoaded();
+        await beforeAllTests(app)
     } );
 
-    afterAll( () =>
+    afterAll( async () =>
     {
-        if ( app && app.isRunning() )
-        {
-            return app.stop();
-        }
+        await afterAllTests(app);
     } );
+
 
     test( 'window loaded', async () =>
     {
-        let loaded = await app.browserWindow.isVisible() ;
-        await delay(3500)
-        return loaded;
-    })
+        expect( await windowLoaded( app ) ).toBeTruthy()
+    });
 
     it( 'populates the DOM api in the tab window:', async( ) =>
     {
