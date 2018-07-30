@@ -13,22 +13,32 @@ export const setClientToMainBrowserWindow = async ( app ) =>
     const { client, browserWindow } = app;
     const windows = await client.getWindowCount();
 
+    if( peruseBrowserWindowIndex )
+    {
+        console.log('already set to:', peruseBrowserWindowIndex )
+        await client.windowByIndex( peruseBrowserWindowIndex );
+        return;
+    }
+
+    console.log('setting client to window...')
     for ( let i = 0; i < windows; i++ )
     {
         // TODO: Use window title to differentiate between PeruseBrowserWindow instances?
         const theWindow = await client.windowByIndex( i );
         const url = await client.getUrl();
-
+        console.log('one window', url, i)
         const urlObj = urlParse( url );
         // get the PeruseBrowserWindow
         // TODO: If more than one...? (checkFocus)
         if ( urlObj.path.includes( 'app.html' ) )
         {
             peruseBrowserWindowIndex = i;
+            console.log('Browser windowwwwwwwwww is being set', peruseBrowserWindowIndex)
             break;
         }
     }
 
+    console.log('AFTER ALL CEHCKINGGGGGGG', peruseBgWindowIndex );
     await client.windowByIndex( peruseBrowserWindowIndex );
 };
 

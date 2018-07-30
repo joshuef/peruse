@@ -3,6 +3,11 @@ import electron from 'electron';
 import path from 'path';
 import RELEASE_NAME from '../../releaseName.js';
 
+import {
+    delay,
+    setClientToMainBrowserWindow
+} from './browser-driver';
+
 jest.unmock('electron')
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 35000;
 
@@ -10,11 +15,6 @@ export const isCI = process.env.CI || false;
 export const travisOS = process.env.TRAVIS_OS_NAME || '';
 export const isUnpacked = process.env.IS_UNPACKED || false;
 export const isTestingPackagedApp = process.env.IS_PACKED || false;
-
-import {
-    delay,
-    setClientToMainBrowserWindow
-} from './browser-driver';
 
 export const setupSpectronApp = ( ) =>
 {
