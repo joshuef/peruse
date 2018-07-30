@@ -63,6 +63,7 @@ export default class Tab extends Component
         this.reloadIfActive = ::this.reloadIfActive;
 
         this.debouncedWebIdUpdateFunc = _.debounce( this.updateTheIdInWebview, 300 );;
+        this.debouncedUpdateTab = _.debounce( this.updateThisTab, 300 );;
     }
 
     isDevToolsOpened = () =>
@@ -232,7 +233,7 @@ export default class Tab extends Component
     didStartLoading( )
     {
         logger.silly( 'webview started loading' );
-        const { updateTab, index, isActiveTab } = this.props;
+        const { index, isActiveTab } = this.props;
 
         const tabUpdate = {
             index,
@@ -240,7 +241,7 @@ export default class Tab extends Component
         };
 
         this.updateBrowserState( { loading: true } );
-        updateTab( tabUpdate );
+        this.debouncedUpdateTab( tabUpdate );
     }
 
     didFailLoad( )
@@ -268,7 +269,7 @@ export default class Tab extends Component
 
     didStopLoading( )
     {
-        const { updateTab, index, isActiveTab } = this.props;
+        const { index, isActiveTab } = this.props;
 
         const tabUpdate = {
             index,
@@ -276,14 +277,14 @@ export default class Tab extends Component
         };
 
         this.updateBrowserState( { loading: false } );
-        updateTab( tabUpdate );
+        this.debouncedUpdateTab( tabUpdate );
 
         this.setCurrentWebId( null );
     }
 
     didFinishLoading( )
     {
-        const { updateTab, index, isActiveTab } = this.props;
+        const { index, isActiveTab } = this.props;
 
         const tabUpdate = {
             index,
@@ -291,7 +292,7 @@ export default class Tab extends Component
         };
 
         this.updateBrowserState( { loading: false } );
-        updateTab( tabUpdate );
+        this.debouncedUpdateTab( tabUpdate );
 
         this.setCurrentWebId( null );
 
@@ -302,13 +303,13 @@ export default class Tab extends Component
         logger.silly( 'Webview: page title updated' );
 
         const title = e.title;
-        const { updateTab, index, isActiveTab } = this.props;
+        const { index, isActiveTab } = this.props;
 
         const tabUpdate = {
             title, index
         };
 
-        updateTab( tabUpdate );
+        this.debouncedUpdateTab( tabUpdate );
     }
 
     pageFaviconUpdated( e )
@@ -318,19 +319,25 @@ export default class Tab extends Component
         // tabDataFetched(index, {webFavicon: e.favicons[0]})
     }
 
-    didNavigate( e )
+    updateThisTab = ( tab ) =>
     {
         const { updateTab, index } = this.props;
+        updateTab( tab );
+    }
+
+    didNavigate( e )
+    {
+        const { index } = this.props;
         const { url } = e;
         const noTrailingSlashUrl = removeTrailingSlash( url );
 
-        logger.verbose( 'webview did navigate' );
+        logger.verbose( 'webview did navigate', url );
 
         // TODO: Actually overwrite history for redirect
         if ( !this.state.browserState.redirects.includes( url ) )
         {
             this.updateBrowserState( { url, redirects: [url] } );
-            updateTab( { index, url } );
+            this.debouncedUpdateTab( { index, url } );
 
             this.setCurrentWebId( null );
         }
@@ -338,7 +345,7 @@ export default class Tab extends Component
 
     didNavigateInPage( e )
     {
-        const { updateTab, index } = this.props;
+        const { index } = this.props;
         const { url } = e;
         const noTrailingSlashUrl = removeTrailingSlash( url );
 
@@ -348,7 +355,7 @@ export default class Tab extends Component
         if ( !this.state.browserState.redirects.includes( url ) )
         {
             this.updateBrowserState( { url, redirects: [url] } );
-            updateTab( { index, url } );
+            this.debouncedUpdateTab( { index, url } );
 
             this.setCurrentWebId( null );
 
@@ -400,7 +407,7 @@ export default class Tab extends Component
 
         const index = this.props.index;
 
-        this.props.updateTab( { index, url } );
+        this.debouncedUpdateTab( { index, url } );
 
         if ( this.props.isActiveTab )
         {
@@ -419,7 +426,7 @@ export default class Tab extends Component
 
     updateTheIdInWebview = ( newWebId ) =>
     {
-        const { updateTab, index, webId } = this.props;
+        const { webId } = this.props;
         const { webview } = this;
 
         const theWebId = newWebId ? newWebId : webId;

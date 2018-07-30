@@ -57,6 +57,30 @@ describe( 'tabs reducer', () =>
             ] );
         } );
 
+            it( 'should handle adding a second tab with hash', () =>
+            {
+                expect(
+                    tabs(
+                        [basicTab],
+                        {
+                            type    : TYPES.ADD_TAB,
+                            payload : {
+                                url : 'safe://another-url#me'
+                            }
+                        }
+                    )
+                ).toEqual( [
+                    basicTab,
+                    {
+                        url          : 'safe://another-url#me',
+                        windowId     : 1,
+                        historyIndex : 0,
+                        index        : 1,
+                        history      : ['safe://another-url#me'],
+                    }
+                ] );
+            })
+
         it( 'should deactivate prev active tab if isActive is set to true and ignore other windows\' tabs', () =>
         {
             const activeTab = { ...basicTab, isActiveTab: true };
@@ -577,6 +601,27 @@ describe( 'tabs reducer', () =>
                     title        : 'hi',
                     historyIndex : 1,
                     history      : ['safe://hello', 'safe://hello/#/boom']
+                }
+            );
+
+            expect( updatedTab ).toHaveProperty( 'history' );
+            expect( updatedTab.history ).toHaveLength( 2 );
+        } );
+
+        it( 'should update the history/index but maintain a document hash', () =>
+        {
+            const newState = tabs( [basicTab, secondTab, activeTab], {
+                type    : TYPES.UPDATE_TAB,
+                payload : { url: 'safe://hello#me', title: 'hi', index: 2 }
+            } );
+            const updatedTab = newState[2];
+            expect( updatedTab ).toMatchObject(
+                {
+                    ...activeTab,
+                    url          : 'safe://hello#me',
+                    title        : 'hi',
+                    historyIndex : 1,
+                    history      : ['safe://hello', 'safe://hello#me']
                 }
             );
 

@@ -45,6 +45,11 @@ describe( 'makeValidAddressBarUrl', () =>
         expect( makeValidAddressBarUrl( 'hello.world/boom/index.html' ) ).toBe( 'safe://hello.world/boom' );
     } );
 
+    it( 'should strip allow document hashes on urls without slashes before ', () =>
+    {
+        expect( makeValidAddressBarUrl( 'hello.world#me' ) ).toBe( 'safe://hello.world#me' );
+    } );
+
     test.skip( 'should clean up url spaces etc', () =>
     {
         expect( makeValidAddressBarUrl( 'hello world/boom/index.html' ) ).toBe( 'safe://hello%20world/boom' );
@@ -128,16 +133,19 @@ describe( 'urlHasChanged', () =>
     it( 'should return true for the same url with a complex hash', () =>
     {
         expect( urlHasChanged( 'safe://hello.world/boom/', 'safe://hello.world/boom/#/hereyouare' ) ).toBeTruthy( );
+        expect( urlHasChanged( 'safe://hello.world/boom/', 'safe://hello.world/boom#/hereyouare' ) ).toBeTruthy( );
     } );
 
     it( 'should return true for the same url with a hash change', () =>
     {
         expect( urlHasChanged( 'safe://hello.world/boom/#/somewhereElse', 'safe://hello.world/boom/#/hereyouare' ) ).toBeTruthy( );
+        expect( urlHasChanged( 'safe://hello.world/boom/#/somewhereElse', 'safe://hello.world/boom#/hereyouare' ) ).toBeTruthy( );
     } );
 
     it( 'should return true for a different url with a complex hash', () =>
     {
         expect( urlHasChanged( 'safe://hello.world/boom/', 'safe://ciao.world/boom/#/hereyouare' ) ).toBeTruthy( );
+        expect( urlHasChanged( 'safe://hello.world/boom/', 'safe://ciao.world/boom#/hereyouare' ) ).toBeTruthy( );
     } );
 
 } );
