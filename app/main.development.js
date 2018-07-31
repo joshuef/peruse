@@ -95,6 +95,8 @@ if ( !isCI && !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDeb
 
 const installExtensions = async () =>
 {
+    if( isCI ) return;
+
     logger.info('&&&&&&&&&&&&& installing extensions')
     const installer = require( 'electron-devtools-installer' );
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
@@ -131,7 +133,7 @@ app.on( 'ready', async () =>
 {
     logger.info( 'App Ready' );
 
-    if ( !isCI && !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDebug )
+    if ( !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDebug )
     {
         await installExtensions();
     }
