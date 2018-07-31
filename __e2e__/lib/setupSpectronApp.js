@@ -71,9 +71,10 @@ export const windowLoaded = async ( app ) =>
     console.log('checking window loadeddddd')
     await delay(7500)
     await setClientToMainBrowserWindow( app );
-    const browser = app.client;
-    console.log('window of app should be set', app.client.getUrl())
-    let loaded = await browser.isVisible() ;
+    // const browser = app.client;
+    console.log('window of app is set to:', await app.browserWindow.getTitle())
+    await app.browserWindow.show() ; //incase now focussed
+    let loaded = await app.browserWindow.isVisible() ;
     console.log('checking window is it vissss', loaded)
     return loaded;
 };

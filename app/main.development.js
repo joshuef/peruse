@@ -85,7 +85,7 @@ if ( isRunningPackaged )
     sourceMapSupport.install();
 }
 
-if ( !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDebug )
+if ( !isCI && !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDebug )
 {
     require( 'electron-debug' )();
     const path = require( 'path' );

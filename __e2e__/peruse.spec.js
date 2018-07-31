@@ -49,10 +49,10 @@ describe( 'main window', () =>
 
     test( 'window loaded', async () =>
     {
-        console.log('isRunningSpectronTestProcess', isRunningSpectronTestProcess)
-        console.log('pre window loaded test')
-        expect( await windowLoaded( app ) ).toBeTruthy()
-        console.log('post window loaded test')
+        console.log('pre window loaded test, is ', isCI)
+        const loaded = await windowLoaded( app )
+        console.log('post window loaded test', loaded)
+        expect( loaded ).toBeTruthy()
     });
 
     //
