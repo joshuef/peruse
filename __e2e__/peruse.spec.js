@@ -49,7 +49,7 @@ describe( 'main window', () =>
 
     test( 'window loaded', async () =>
     {
-        console.log('pre window loaded test, is ', isCI)
+        console.log('pre window loaded test, is ci?', isCI)
         const loaded = await windowLoaded( app )
         console.log('post window loaded test', loaded)
         expect( loaded ).toBeTruthy()

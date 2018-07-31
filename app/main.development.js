@@ -132,7 +132,7 @@ app.on( 'ready', async () =>
 
     if ( !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDebug )
     {
-        await installExtensions();
+        // await installExtensions();
     }
 
     if ( ( process.platform === 'linux' ) || ( process.platform === 'win32' ) )
