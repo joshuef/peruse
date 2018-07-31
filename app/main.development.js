@@ -95,6 +95,7 @@ if ( !isCI && !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDeb
 
 const installExtensions = async () =>
 {
+    logger.info('&&&&&&&&&&&&& installing extensions')
     const installer = require( 'electron-devtools-installer' );
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
     const extensions = [
