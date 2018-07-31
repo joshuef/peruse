@@ -36,7 +36,7 @@ export const setupSpectronApp = ( ) =>
         args : [ isTestingPackagedApp ? '' : path.join( __dirname, '..' , '..', 'app' ) ], // lib, e2e, test
         env  : {
             IS_SPECTRON: true,
-            // CI: isCI,
+            CI: isCI,
             // TRAVIS_OS_NAME : travisOS,
             // IS_UNPACKED : isUnpacked,
             // IS_PACKED : isTestingPackagedApp
@@ -50,10 +50,9 @@ export const setupSpectronApp = ( ) =>
 
 export const afterAllTests = ( app ) =>
 {
-    console.log('that isafterall')
     if ( app && app.isRunning() )
     {
-        console.log('app is running so sotp it')
+        console.log('app is running so stpp it')
         return app.stop();
     }
 }
@@ -68,14 +67,11 @@ export const beforeAllTests =  async ( app ) =>
 
 export const windowLoaded = async ( app ) =>
 {
-    console.log('checking window loadeddddd')
-    await delay(3500)
-    // await setClientToMainBrowserWindow( app );
-    // const browser = app.client;
+    await delay(2500)
     console.log('window of app is set to:', await app.browserWindow.getTitle())
     await app.browserWindow.show() ; //incase now focussed
-    await delay(3500)
+    await delay(2500)
     let loaded = await app.browserWindow.isVisible() ;
-    console.log('checking window is it vissss', loaded)
+    console.log('checking window is it vissss:', loaded)
     return loaded;
 };

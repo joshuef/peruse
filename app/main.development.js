@@ -130,9 +130,9 @@ app.on( 'ready', async () =>
 {
     logger.info( 'App Ready' );
 
-    if ( !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDebug )
+    if ( !isCI && !isRunningSpectronTestProcess && isRunningUnpacked || isRunningDebug )
     {
-        // await installExtensions();
+        await installExtensions();
     }
 
     if ( ( process.platform === 'linux' ) || ( process.platform === 'win32' ) )
