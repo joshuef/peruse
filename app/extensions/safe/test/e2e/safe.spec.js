@@ -96,7 +96,7 @@ describe( 'SAFE network webFetch operation', async () =>
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );
 
         await client.windowByIndex( tabIndex - 1 );
-        await delay(500)
+        await delay(1500)
         const clientUrl = await client.getUrl();
         const parsedUrl = urlParse( clientUrl );
 
