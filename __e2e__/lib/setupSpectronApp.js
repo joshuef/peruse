@@ -72,7 +72,7 @@ export const beforeAllTests =  async ( app ) =>
 export const windowLoaded = async ( app ) =>
 {
     await delay(2500)
-    console.log('window of app is set to:', await app.browserWindow.getTitle())
+    // console.log('window of app is set to:', await app.browserWindow.getTitle())
     await app.browserWindow.show() ; //incase now focussed
     await delay(2500)
     let loaded = await app.browserWindow.isVisible() ;
