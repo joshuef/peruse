@@ -104,6 +104,7 @@ export const newTab = async ( app ) =>
     await client.pause( 1500 );
 
     const length2 = await client.getWindowCount();
-
-    return windows;
+    console.log('first lenght:', windows, 'sendonddd', length2)
+    return length2 - 1 //index is count minus 1
+    // return windows
 };

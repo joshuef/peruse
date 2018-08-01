@@ -78,6 +78,8 @@ describe( 'main window', () =>
     {
         expect.assertions(2);
         const { client } = app;
+        await delay( 2500 );
+
         const tabIndex = await newTab( app );
         await navigateTo( app, 'example.com' );
         await client.waitForExist( BROWSER_UI.ADDRESS_INPUT , WAIT_FOR_EXIST_TIMEOUT);
@@ -87,7 +89,7 @@ describe( 'main window', () =>
         await delay( 2500 );
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );
 
-        await client.windowByIndex( tabIndex  + 1 );
+        await client.windowByIndex( tabIndex   );
         await delay( 2500 );
 
         const clientUrl = await client.getUrl();
@@ -155,6 +157,8 @@ describe( 'main window', () =>
     it( 'can close a tab', async () =>
     {
         const { client } = app;
+        await delay( 2500 );
+
         await setClientToMainBrowserWindow( app );
         const tabIndex = await newTab( app );
 

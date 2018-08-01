@@ -25,17 +25,20 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL;
 
 describe( 'safe authenticator protocol', () =>
 {
-    const app = setupSpectronApp();
+  let app;
 
-    beforeAll( async () =>
-    {
-        await beforeAllTests(app)
-    } );
+  beforeEach( async () =>
+  {
+    app = setupSpectronApp();
 
-    afterAll( async () =>
-    {
-        await afterAllTests(app);
-    } );
+      await beforeAllTests(app)
+  } );
+
+  afterEach( async () =>
+  {
+      await afterAllTests(app);
+      console.log('APP SHOULD BE STOPPED', app.isRunning())
+  } );
 
     test( 'window loaded', async () =>
     {
@@ -43,7 +46,8 @@ describe( 'safe authenticator protocol', () =>
     });
 
 
-    if( travisOS !== 'linux' )
+    // if( travisOS !== 'linux' )
+    if( process.platform  !== 'linux' )
     {
         it( 'is registered to handle safe-auth/home js requests:', async( ) =>
         {
