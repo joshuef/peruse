@@ -157,7 +157,7 @@ describe( 'main window', () =>
     it( 'can close a tab', async () =>
     {
         const { client } = app;
-        await delay( 2500 );
+        await delay( 4500 );
 
         await setClientToMainBrowserWindow( app );
         const tabIndex = await newTab( app );
@@ -166,7 +166,7 @@ describe( 'main window', () =>
         await client.waitForExist( BROWSER_UI.CLOSE_TAB, WAIT_FOR_EXIST_TIMEOUT );
 
         await client.click( `${BROWSER_UI.ACTIVE_TAB} ${BROWSER_UI.CLOSE_TAB}` );
-        await delay( 2500 );
+        await delay( 4500 );
         // await client.pause( 500 );
 
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );

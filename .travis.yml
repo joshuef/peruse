@@ -52,20 +52,20 @@ script:
   fi
 - export {no_proxy,NO_PROXY}="127.0.0.1,localhost"
 - sleep 15
-- pkill -f electron || pkill -f Peruse || true;
-- if [[ "$NODE_ENV" != "prod" ]]; then travis_retry yarn run test-e2e;
+# - pkill -f electron || pkill -f Peruse || true;
+- if [[ "$NODE_ENV" != "prod" ]]; then travis_retry pkill -f electron || pkill -f Peruse || yarn run test-e2e;
   fi
   # -1 if not runnning, just incase we || true
-- pkill -f electron || pkill -f Peruse || true;
-- if [[ "$NODE_ENV" != "prod" ]]; then travis_retry yarn run test-exts-e2e;
+# - pkill -f electron || pkill -f Peruse || true;
+- if [[ "$NODE_ENV" != "prod" ]]; then travis_retry pkill -f electron || pkill -f Peruse || yarn run test-exts-e2e;
   fi
 - yarn run package-only
-- if [[ "$NODE_ENV" == "prod"  ]]; then travis_retry yarn run test-e2e-prod;
+- if [[ "$NODE_ENV" == "prod"  ]]; then travis_retry pkill -f electron || pkill -f Peruse || yarn run test-e2e-prod;
   fi
   #-1 if not runnning, just incase
-- pkill -f electron || pkill -f Peruse || true;
+# - pkill -f electron || pkill -f Peruse || true;
 - sleep 5
-- if [[ "$NODE_ENV" == "prod" ]]; then travis_retry yarn run test-exts-e2e-prod;
+- if [[ "$NODE_ENV" == "prod" ]]; then travis_retry pkill -f electron || pkill -f Peruse || yarn run test-exts-e2e-prod;
   fi
 
 after_success:
