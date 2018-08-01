@@ -37,7 +37,6 @@ export const setupSpectronApp = ( ) =>
         env  : {
             IS_SPECTRON: true,
             CI: isCI,
-            // TRAVIS_OS_NAME : travisOS,
             // IS_UNPACKED : isUnpacked,
             // IS_PACKED : isTestingPackagedApp
         }
