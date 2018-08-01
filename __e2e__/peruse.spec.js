@@ -34,16 +34,19 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL;
 
 describe( 'main window', () =>
 {
-    const app = setupSpectronApp();
+    let app;
 
-    beforeAll( async () =>
+    beforeEach( async () =>
     {
+      app = setupSpectronApp();
+
         await beforeAllTests(app)
     } );
 
-    afterAll( async () =>
+    afterEach( async () =>
     {
-        await afterAllTests(app)
+        await afterAllTests(app);
+        console.log('APP SHOULD BE STOPPED', app.isRunning())
     } );
 
 
@@ -80,11 +83,11 @@ describe( 'main window', () =>
         await client.waitForExist( BROWSER_UI.ADDRESS_INPUT , WAIT_FOR_EXIST_TIMEOUT);
 
 
-        await client.pause( 1500 );
+        // await client.pause( 1500 );
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );
 
         await client.windowByIndex( tabIndex );
-        await delay( 500 );
+        await delay( 2500 );
 
         const clientUrl = await client.getUrl();
 
@@ -158,7 +161,7 @@ describe( 'main window', () =>
         await client.waitForExist( BROWSER_UI.CLOSE_TAB, WAIT_FOR_EXIST_TIMEOUT );
 
         await client.click( `${BROWSER_UI.ACTIVE_TAB} ${BROWSER_UI.CLOSE_TAB}` );
-        await client.pause( 500 );
+        await delay( 1500 );
         // await client.pause( 500 );
 
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );

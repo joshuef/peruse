@@ -48,12 +48,15 @@ export const setupSpectronApp = ( ) =>
 }
 
 
-export const afterAllTests = ( app ) =>
+export const afterAllTests = async ( app ) =>
 {
     if ( app && app.isRunning() )
     {
         console.log('app is running so stpp it')
-        return app.stop();
+        await app.stop();
+        console.log('app is STOPPPEPEDDD')
+
+        return;
     }
 }
 
@@ -61,7 +64,9 @@ export const beforeAllTests =  async ( app ) =>
 {
     await app.start();
     // console.log('starting', app)
-    return app.client.waitUntilWindowLoaded();
+    await app.client.waitUntilWindowLoaded();
+
+    return;
 } ;
 
 
