@@ -86,7 +86,7 @@ describe( 'main window', () =>
         // await client.pause( 1500 );
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );
 
-        await client.windowByIndex( tabIndex );
+        await client.windowByIndex( tabIndex  + 1 );
         await delay( 2500 );
 
         const clientUrl = await client.getUrl();
@@ -161,7 +161,7 @@ describe( 'main window', () =>
         await client.waitForExist( BROWSER_UI.CLOSE_TAB, WAIT_FOR_EXIST_TIMEOUT );
 
         await client.click( `${BROWSER_UI.ACTIVE_TAB} ${BROWSER_UI.CLOSE_TAB}` );
-        await delay( 1500 );
+        await delay( 2500 );
         // await client.pause( 500 );
 
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );
