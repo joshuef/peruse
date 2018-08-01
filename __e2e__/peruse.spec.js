@@ -86,11 +86,11 @@ describe( 'main window', () =>
 
 
         // await client.pause( 1500 );
-        await delay( 2500 );
+        await delay( 4500 );
         const address = await client.getValue( BROWSER_UI.ADDRESS_INPUT );
 
         await client.windowByIndex( tabIndex   );
-        await delay( 2500 );
+        await delay( 5500 );
 
         const clientUrl = await client.getUrl();
 
