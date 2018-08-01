@@ -59,9 +59,9 @@ describe( 'SAFE network webFetch operation', async () =>
         const tabIndex = await newTab( app );
 
         await navigateTo( app, 'safeAPI.com' );
-        await delay( 1500 );
+        // await delay( 1500 );
 
-        const windows = await client.getWindowCount()
+        // const windows = await client.getWindowCount()
 
         // TODO: Why -1 here? when others not... ? Something is hanging around...
         await client.windowByIndex( tabIndex - 1 );
@@ -69,7 +69,7 @@ describe( 'SAFE network webFetch operation', async () =>
 
         let theSafeClient = await client.execute( function (){ return window.safe } );
         theSafeClient = theSafeClient.value;
-        await delay( 2500 );
+        // await delay( 2500 );
         // await client.pause(1500)
 
 
@@ -83,7 +83,7 @@ describe( 'SAFE network webFetch operation', async () =>
 
     it( 'has safe:// protocol', async () =>
     {
-        expect.assertions( 2 );
+        expect.assertions( 1 );
 
         await setClientToMainBrowserWindow( app );
         const { client } = await app;
