@@ -8,7 +8,7 @@ import {
     setClientToBackgroundProcessWindow,
     isRunningSpectronTestProcess
 } from './lib/browser-driver';
-import { BROWSER_UI, WAIT_FOR_EXIST_TIMEOUT } from './lib/constants';
+import { BROWSER_UI, WAIT_FOR_EXIST_TIMEOUT , DEFAULT_TIMEOUT_INTERVAL} from './lib/constants';
 import {
     setupSpectronApp
     , isCI
@@ -19,7 +19,7 @@ import {
 } from 'spectron-lib/setupSpectronApp';
 
 jest.unmock( 'electron' );
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 65000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL;
 
 // TODO:
 // - Check for protocols/APIs? Via js injection?
