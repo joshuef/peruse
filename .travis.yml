@@ -56,7 +56,7 @@ script:
   fi
   # -1 if not runnning, just incase we || true
 - pkill -f electron || true;
-- if [[ "$NODE_ENV" != "prod" && "$TRAVIS_OS_NAME" == "osx" ]]; then yarn run test-exts-e2e;
+- if [[ "$NODE_ENV" != "prod" ]]; then yarn run test-exts-e2e;
   fi
 - yarn run package-only
 - if [[ "$NODE_ENV" == "prod"  ]]; then yarn run test-e2e-prod;
