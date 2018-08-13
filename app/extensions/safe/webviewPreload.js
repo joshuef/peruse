@@ -19,24 +19,24 @@ const _setImmediate = setImmediate
 const VERSION = pkg.version;
 const pendingCalls = {};
 
-class WebIdEvents extends EventEmitter {}
-
-const webIdEventEmitter = new WebIdEvents();
-
+// class WebIdEvents extends EventEmitter {}
+//
+// const webIdEventEmitter = new WebIdEvents();
+//
 
 const onPreload = ( store ) =>
 {
     setupPreloadedSafeAuthApis( store );
-    setupWebIdEventEmitter( store );
+    // setupWebIdEventEmitter( store );
 }
 
-export const setupWebIdEventEmitter = ( store, win = window ) =>
-{
-    if (typeof win !== 'undefined' )
-    {
-        win.webIdEventEmitter = webIdEventEmitter;
-    }
-}
+// export const setupWebIdEventEmitter = ( store, win = window ) =>
+// {
+//     if (typeof win !== 'undefined' )
+//     {
+//         win.webIdEventEmitter = webIdEventEmitter;
+//     }
+// }
 
 export const setupSafeAPIs = ( store, win = window ) =>
 {
