@@ -12,10 +12,10 @@ node_js:
 cache:
   yarn: true
   directories:
-  - node_modules
-  - app/node_modules
-  - "$HOME/.electron"
-  - "$HOME/.cache"
+  # - node_modules
+  # - app/node_modules
+  # - "$HOME/.electron"
+  # - "$HOME/.cache"
 
 addons:
   # chrome: stable
