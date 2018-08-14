@@ -23,9 +23,13 @@ describe( 'Browser', () =>
             ui                   : {},
             addBookmark          : jest.fn(),
             removeBookmark       : jest.fn(),
-            selectAddressBar      : jest.fn(),
+            selectAddressBar     : jest.fn(),
+            deselectAddressBar   : jest.fn(),
+            reloadPage           : jest.fn(),
+            pageLoaded           : jest.fn(),
             blurAddressBar       : jest.fn(),
             addNotification      : jest.fn(),
+            updateNotification   : jest.fn(),
             addLocalNotification : jest.fn()
         };
         wrapper = mount( <Browser { ...props } /> );
@@ -36,7 +40,7 @@ describe( 'Browser', () =>
     {
         it( 'should have name Browser', () =>
         {
-            expect( instance.constructor.name ).toBe( 'Browser' );
+            expect( instance.constructor.name ).toMatch( 'Browser' );
         } );
     } );
 

@@ -60,5 +60,15 @@ describe( 'notification actions', () =>
         expect( peruseAppActions.reconnectSafeApp( ) ).toEqual( expectedAction );
     } );
 
+    it( 'should showWebIdDropdown', () =>
+    {
+        const payload = 'hovered';
+        const expectedAction = {
+            type : peruseAppActions.TYPES.SHOW_WEB_ID_DROPDOWN,
+            payload
+        };
+        expect( peruseAppActions.showWebIdDropdown( payload ) ).toEqual( expectedAction );
+    } );
+
 
 } );
