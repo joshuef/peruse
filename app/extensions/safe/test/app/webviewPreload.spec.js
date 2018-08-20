@@ -6,15 +6,14 @@ import { APP_INFO, startedRunningProduction } from 'appConstants';
 const APPVEYOR = process.env.APPVEYOR;
 
 
-
-describe('SAFE manageWebIdUpdates', () => {
+describe.only('SAFE manageWebIdUpdates', () => {
     if ( APPVEYOR ) return;
 
     let win = {};
     let store = { subscribe: jest.fn() }; //need to mock store. should be called once.
     beforeEach( () =>
     {
-        webviewPreload.manageWebIdUpdates( store, win )
+        webviewPreload.onPreload( store, win )
     });
 
     test( 'webIdEventEmitter should exist', () =>
@@ -49,7 +48,7 @@ describe('SAFE Webview Preload APIs', () =>
     let store = jest.fn(); //need to mock store. should be called once.
     beforeEach( () =>
     {
-        webviewPreload.setupSafeAPIs( store, win )
+        webviewPreload.onPreload( store, win )
     });
 
     test('setupSafeAPIs populates the window object', async () =>
