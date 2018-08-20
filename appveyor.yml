@@ -46,6 +46,7 @@ install:
   - yarn config list
 
   - npm cache clean --force
+  - yarn cache clean --force
 
   - yarn add windows-build-tools --vs2017 --global
   - yarn add node-gyp --global
