@@ -5,15 +5,8 @@ import { APP_INFO, startedRunningProduction } from 'appConstants';
 // avoid appveyour for its weak.ref issues right now.
 const APPVEYOR = process.env.APPVEYOR;
 
-jest.mock('extensions/safe/peruseSafeApp', () =>
-{
-    return {
-        getWebIds : () => []
-    }
-});
 
 
-https://github.com/facebook/jest/issues/3552
 describe('SAFE manageWebIdUpdates', () => {
     if ( APPVEYOR ) return;
 

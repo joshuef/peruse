@@ -3,15 +3,14 @@ import { TYPES as PERUSE_TYPES } from 'extensions/safe/actions/peruse_actions';
 import { TYPES } from 'actions/notification_actions';
 import { SAFE } from 'extensions/safe/constants';
 
-jest.mock('extensions/safe/peruseSafeApp', () =>
-{
-    return {
-        getWebIds : () => []
-    }
-});
+// jest.mock('extensions/safe/peruseSafeApp', () =>
+// {
+//     return {
+//         getWebIds : () => []
+//     }
+// });
 
 
-//https://github.com/facebook/jest/issues/3552
 describe( 'Authenticator comms', () =>
 {
 
