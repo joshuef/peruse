@@ -1,17 +1,25 @@
 import * as webviewPreload from 'extensions/safe/webviewPreload';
 import { APP_INFO, startedRunningProduction } from 'appConstants';
 
-jest.mock('logger');
 
 // avoid appveyour for its weak.ref issues right now.
 const APPVEYOR = process.env.APPVEYOR;
 
+jest.mock('extensions/safe/peruseSafeApp', () =>
+{
+    return {
+        getWebIds : () => []
+    }
+});
+
+
+https://github.com/facebook/jest/issues/3552
 describe('SAFE manageWebIdUpdates', () => {
     if ( APPVEYOR ) return;
 
     let win = {};
     let store = { subscribe: jest.fn() }; //need to mock store. should be called once.
-    beforeAll( () =>
+    beforeEach( () =>
     {
         webviewPreload.manageWebIdUpdates( store, win )
     });
@@ -46,7 +54,7 @@ describe('SAFE Webview Preload APIs', () =>
 
     let win = {};
     let store = jest.fn(); //need to mock store. should be called once.
-    beforeAll( () =>
+    beforeEach( () =>
     {
         webviewPreload.setupSafeAPIs( store, win )
     });

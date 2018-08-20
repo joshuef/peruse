@@ -7,6 +7,15 @@ import { SAFE } from 'extensions/safe/constants';
 
 const safeInitialState = initialState.peruseApp;
 
+jest.mock('extensions/safe/peruseSafeApp', () =>
+{
+    return {
+        getWebIds : () => []
+    }
+});
+
+
+https://github.com/facebook/jest/issues/3552
 describe( 'Peruse App reducer', () =>
 {
     it( 'should return the initial state', () =>
