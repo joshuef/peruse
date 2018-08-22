@@ -15,7 +15,7 @@ export const removeTrailingSlash = ( url ) =>
 {
     if ( url )
     {
-        return url.replace( /\/$/, '' );
+        return url.replace( /\/\#\/$/, '' );
     }
 
     return url;
