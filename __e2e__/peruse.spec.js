@@ -115,8 +115,10 @@ describe( 'main window', () =>
         await client.pause( 4500 );
         await client.windowByIndex( tabIndex );
 
-        const clientUrl = removeTrailingSlash( await client.getUrl() );
-        expect( clientUrl ).toBe( 'safe://example.com' );
+        const clientUrl = await client.getUrl();
+        const parsedUrl = urlParse( clientUrl );
+
+        expect( parsedUrl.host ).toBe( 'example.com' );
     } );
 
 
@@ -136,24 +138,19 @@ describe( 'main window', () =>
         await client.click( BROWSER_UI.BACKWARDS );
         await client.pause( 4500 );
         await client.windowByIndex( tabIndex );
-
-        // const clientUrl = removeTrailingSlash( await client.getUrl() );
-
-        // TODO: URL from webview always has trailing slash
-        // expect( clientUrl ).toBe( 'safe://example.com' );
+        
         await setClientToMainBrowserWindow( app );
         await client.pause( 500 );
+
         await client.waitForExist( BROWSER_UI.FORWARDS, WAIT_FOR_EXIST_TIMEOUT );
-        
-        // TODO: why is iting needing two clicks?
-        // await client.click( BROWSER_UI.FORWARDS );
         await client.click( BROWSER_UI.FORWARDS );
         await client.pause( 4500 );
-
         await client.windowByIndex( tabIndex );
-        const clientUrl2 = removeTrailingSlash( await client.getUrl() );
 
-        expect( clientUrl2 ).toBe( 'safe://google.com' );
+        const clientUrl2 = await client.getUrl();
+        const parsedUrl2 = urlParse( clientUrl2 );
+
+        expect( parsedUrl2.host ).toBe( 'google.com' );
     } );
 
 
