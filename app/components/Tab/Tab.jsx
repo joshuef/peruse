@@ -85,12 +85,12 @@ export default class Tab extends Component
         this.reload();
         pageLoaded();
     }
-
-    buildMenu = () =>
+    buildMenu = ( webview ) =>
     {
         if( !remote ) return null; //jest workaround
 
-        const {Menu} = remote;
+        const { Menu } = remote;
+        let rightClickPosition;
 
 
         const menu = Menu.buildFromTemplate( [
@@ -108,7 +108,12 @@ export default class Tab extends Component
             }
         ] );
 
-        return menu;
+        webview.addEventListener( 'contextmenu', ( e ) =>
+        {
+            e.preventDefault();
+            rightClickPosition = { x: e.x, y: e.y };
+            menu.popup( remote.getCurrentWindow() );
+        }, false );
     }
 
     componentDidMount()
@@ -116,10 +121,17 @@ export default class Tab extends Component
         const { webview } = this;
         let rightClickPosition;
 
-        const menu = this.buildMenu();
 
         const callbackSetup = () =>
         {
+            if ( !webview )
+            {
+                logger.verbose('No webview found so not doing: callback setup on window webview')
+                return;
+            }
+
+            this.buildMenu( webview );
+
             webview.addEventListener( 'did-start-loading', ::this.didStartLoading );
             webview.addEventListener( 'did-stop-loading', ::this.didStopLoading );
             webview.addEventListener( 'did-finish-load', ::this.didFinishLoading );
@@ -132,12 +144,6 @@ export default class Tab extends Component
             webview.addEventListener( 'new-window', ::this.newWindow );
             webview.addEventListener( 'did-fail-load', ::this.didFailLoad );
 
-            webview.addEventListener( 'contextmenu', ( e ) =>
-            {
-                e.preventDefault();
-                rightClickPosition = { x: e.x, y: e.y };
-                menu.popup( remote.getCurrentWindow() );
-            }, false );
 
             this.domReady();
 
